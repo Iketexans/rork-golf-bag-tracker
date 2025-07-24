@@ -1,0 +1,78 @@
+import { Bag } from '@/types/bag';
+
+export const bags: Bag[] = [
+  {
+    id: '1',
+    memberId: '1',
+    bagNumber: 'B101',
+    location: 'bagroom',
+    lastUpdated: new Date(Date.now() - 3600000).toISOString(),
+    notes: 'New clubs added',
+  },
+  {
+    id: '2',
+    memberId: '2',
+    bagNumber: 'B102',
+    location: 'course',
+    lastUpdated: new Date(Date.now() - 7200000).toISOString(),
+  },
+  {
+    id: '3',
+    memberId: '3',
+    bagNumber: 'B103',
+    location: 'player',
+    lastUpdated: new Date(Date.now() - 1800000).toISOString(),
+    notes: 'Needs cleaning',
+  },
+  {
+    id: '4',
+    memberId: '4',
+    bagNumber: 'B104',
+    location: 'bagroom',
+    lastUpdated: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    id: '5',
+    memberId: '5',
+    bagNumber: 'B105',
+    location: 'course',
+    lastUpdated: new Date(Date.now() - 10800000).toISOString(),
+  },
+  {
+    id: '6',
+    memberId: '6',
+    bagNumber: 'B106',
+    location: 'bagroom',
+    lastUpdated: new Date(Date.now() - 43200000).toISOString(),
+    notes: 'New bag tag needed',
+  },
+  {
+    id: '7',
+    memberId: '7',
+    bagNumber: 'B107',
+    location: 'player',
+    lastUpdated: new Date(Date.now() - 5400000).toISOString(),
+  },
+  {
+    id: '8',
+    memberId: '8',
+    bagNumber: 'B108',
+    location: 'bagroom',
+    lastUpdated: new Date(Date.now() - 172800000).toISOString(),
+  },
+  {
+    id: '9',
+    memberId: '9',
+    bagNumber: 'B109',
+    location: 'course',
+    lastUpdated: new Date(Date.now() - 14400000).toISOString(),
+    notes: 'Rain cover missing',
+  },
+  {
+    id: '10',
+    memberId: '10',
+    bagNumber: 'B110',
+    location: 'bagroom',
+    lastUpdated: new Date(Date.now() - 259200000).toISOString(),
+  },
+];
