@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
 import colors from '@/constants/colors';
 import { User, Lock, Building } from 'lucide-react-native';
@@ -62,7 +62,7 @@ export default function LoginScreen() {
           <View style={styles.logoContainer}>
             <Building size={48} color={colors.primary} />
           </View>
-          <Text style={styles.title}>Bagroom Manager</Text>
+          <Text style={styles.title}>Bagroom Caddy</Text>
           <Text style={styles.subtitle}>Professional Golf Club Management</Text>
         </View>
 
@@ -120,9 +120,11 @@ export default function LoginScreen() {
             <View style={styles.dividerLine} />
           </View>
 
-          <TouchableOpacity style={styles.createAccountButton}>
-            <Text style={styles.createAccountText}>Create New Account</Text>
-          </TouchableOpacity>
+          <Link href="/auth/create-account" asChild>
+            <TouchableOpacity style={styles.createAccountButton}>
+              <Text style={styles.createAccountText}>Create New Account</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
 
         <View style={styles.footer}>

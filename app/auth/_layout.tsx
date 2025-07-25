@@ -5,6 +5,7 @@ import colors from '@/constants/colors';
 export default function AuthLayout() {
   return (
     <Stack
+      initialRouteName="login"
       screenOptions={{
         headerShown: false,
         contentStyle: {
@@ -13,6 +14,7 @@ export default function AuthLayout() {
       }}
     >
       <Stack.Screen name="login" />
+      <Stack.Screen name="create-account" />
       <Stack.Screen name="subscription" />
     </Stack>
   );

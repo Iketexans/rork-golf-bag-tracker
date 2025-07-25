@@ -22,6 +22,7 @@ interface AuthState {
   
   // Actions
   login: (username: string, password: string) => Promise<boolean>;
+  createAccount: (email: string, username: string, password: string) => Promise<boolean>;
   logout: () => void;
   setSubscription: (plan: SubscriptionPlan, expiryDate: string) => void;
   checkSubscriptionStatus: () => void; // New function to update subscription status
@@ -73,6 +74,26 @@ export const useAuthStore = create<AuthState>()(
             id: '1',
             username,
             email: `${username}@example.com`,
+            clubName: 'Pine Valley Golf Club',
+          };
+          
+          set({
+            isAuthenticated: true,
+            user,
+          });
+          
+          return true;
+        }
+        return false;
+      },
+
+      createAccount: async (email: string, username: string, password: string) => {
+        // Mock account creation - in real app, this would call an API
+        if (email.length > 0 && username.length > 0 && password.length > 0) {
+          const user: User = {
+            id: Date.now().toString(),
+            username,
+            email,
             clubName: 'Pine Valley Golf Club',
           };
           

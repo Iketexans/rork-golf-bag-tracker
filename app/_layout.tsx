@@ -10,7 +10,7 @@ import { useDeepLinking } from "@/hooks/useDeepLinking";
 import { useAuthStore } from "@/store/authStore";
 
 export const unstable_settings = {
-  initialRouteName: "auth",
+  initialRouteName: "auth/login",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
