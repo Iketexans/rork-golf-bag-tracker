@@ -164,12 +164,12 @@ export default function SettingsScreen() {
           {renderSettingItem(
             <HelpCircle size={20} color={colors.primary} style={styles.settingIcon} />,
             'Help Center',
-            () => console.log('Help Center pressed')
+            () => router.push('/help-center')
           )}
           {renderSettingItem(
             <Info size={20} color={colors.primary} style={styles.settingIcon} />,
             'About',
-            () => console.log('About pressed')
+            () => router.push('/about')
           )}
         </View>
 

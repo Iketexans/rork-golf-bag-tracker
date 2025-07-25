@@ -1,5 +1,6 @@
 const colors = {
   primary: '#3a7ca5', // Blue
+  primaryLight: '#e3f2fd', // Light blue
   secondary: '#81b29a', // Mint green
   background: '#f8f9fa',
   card: '#ffffff',
