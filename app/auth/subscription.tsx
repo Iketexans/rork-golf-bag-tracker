@@ -24,31 +24,31 @@ export default function SubscriptionScreen() {
     {
       id: 'monthly' as const,
       name: 'Monthly Plan',
-      price: '$100',
+      price: '$225',
       period: 'per month',
       savings: null,
       features: [
         'Unlimited bag tracking',
         'Order management',
         'Member profiles',
-        'Deep linking & QR codes',
         'Excel/CSV import',
         'Real-time updates',
+        'Priority support',
       ],
     },
     {
       id: 'yearly' as const,
       name: 'Annual Plan',
-      price: '$1,000',
+      price: '$2,500',
       period: 'per year',
       savings: 'Save $200',
       features: [
-        'Everything in Monthly',
+        'Unlimited bag tracking',
+        'Order management',
+        'Member profiles',
+        'Excel/CSV import',
+        'Real-time updates',
         'Priority support',
-        'Advanced analytics',
-        'Custom integrations',
-        'Staff training included',
-        'Dedicated account manager',
       ],
     },
   ];
@@ -86,7 +86,7 @@ export default function SubscriptionScreen() {
       
       Alert.alert(
         'Success!',
-        'Your subscription has been activated. Welcome to Bagroom Manager!',
+        'Your subscription has been activated. Welcome to Bagroom Caddy!',
         [
           {
             text: 'Get Started',

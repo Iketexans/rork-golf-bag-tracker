@@ -11,19 +11,21 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login, isAuthenticated, isSubscriptionActive } = useAuthStore();
+  const { login, isAuthenticated, isSubscriptionActive, user } = useAuthStore();
   const router = useRouter();
 
   // Check if user is already authenticated and redirect
   useEffect(() => {
     if (isAuthenticated) {
-      if (isSubscriptionActive) {
+      if (user?.role === 'owner') {
+        router.replace('/owner-dashboard');
+      } else if (isSubscriptionActive) {
         router.replace('/(tabs)');
       } else {
         router.replace('/auth/subscription');
       }
     }
-  }, [isAuthenticated, isSubscriptionActive]);
+  }, [isAuthenticated, isSubscriptionActive, user]);
 
   const handleLogin = async () => {
     if (!username.trim() || !password.trim()) {
