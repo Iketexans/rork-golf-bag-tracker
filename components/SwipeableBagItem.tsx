@@ -7,14 +7,20 @@ import BagListItem from './BagListItem';
 import { useBagStore } from '@/store/bagStore';
 import * as Haptics from 'expo-haptics';
 
-// Conditional import for gesture handler
-let PanGestureHandler: any;
-let State: any;
+// Conditional import for gesture handler - only on native platforms
+let PanGestureHandler: any = null;
+let State: any = null;
 
 if (Platform.OS !== 'web') {
-  const GestureHandler = require('react-native-gesture-handler');
-  PanGestureHandler = GestureHandler.PanGestureHandler;
-  State = GestureHandler.State;
+  try {
+    const GestureHandler = require('react-native-gesture-handler');
+    PanGestureHandler = GestureHandler.PanGestureHandler;
+    State = GestureHandler.State;
+  } catch (error) {
+    console.warn('Gesture handler not available:', error);
+    PanGestureHandler = null;
+    State = null;
+  }
 }
 
 interface SwipeableBagItemProps {
@@ -28,13 +34,13 @@ export default function SwipeableBagItem({ bag, member, showStarButton = true }:
   const translateX = useRef(new Animated.Value(0)).current;
   const swipeThreshold = -80;
 
-  const handleGestureEvent = Platform.OS !== 'web' ? Animated.event(
+  const handleGestureEvent = Platform.OS !== 'web' && PanGestureHandler ? Animated.event(
     [{ nativeEvent: { translationX: translateX } }],
     { useNativeDriver: true }
   ) : undefined;
 
   const handleStateChange = (event: any) => {
-    if (Platform.OS === 'web') return;
+    if (Platform.OS === 'web' || !State) return;
     
     if (event.nativeEvent.state === State.END) {
       const { translationX } = event.nativeEvent;
@@ -79,8 +85,8 @@ export default function SwipeableBagItem({ bag, member, showStarButton = true }:
     );
   };
 
-  // On web, just show the regular item without swipe functionality
-  if (Platform.OS === 'web') {
+  // On web or when gesture handler is not available, just show the regular item without swipe functionality
+  if (Platform.OS === 'web' || !PanGestureHandler) {
     return (
       <BagListItem 
         bag={bag} 

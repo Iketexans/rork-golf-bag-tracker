@@ -4,10 +4,23 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Platform, View } from "react-native";
 import colors from "@/constants/colors";
 import { useDeepLinking } from "@/hooks/useDeepLinking";
 import { useAuthStore } from "@/store/authStore";
+
+// Conditional import for gesture handler
+let GestureHandlerRootView: any = View;
+
+if (Platform.OS !== 'web') {
+  try {
+    const GestureHandler = require('react-native-gesture-handler');
+    GestureHandlerRootView = GestureHandler.GestureHandlerRootView;
+  } catch (error) {
+    console.warn('Gesture handler not available:', error);
+    GestureHandlerRootView = View;
+  }
+}
 
 export const unstable_settings = {
   initialRouteName: "auth/login",
