@@ -2,16 +2,16 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Linking, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { ArrowLeft, Globe, Mail, MapPin, Users, Award, Heart } from 'lucide-react-native';
+import { ArrowLeft, Globe, Mail, MapPin } from 'lucide-react-native';
 import colors from '@/constants/colors';
 
 export default function AboutScreen() {
   const handleWebsitePress = () => {
-    Linking.openURL('https://yourcompany.com');
+    Linking.openURL('https://www.bagroomcaddy.com');
   };
 
   const handleEmailPress = () => {
-    Linking.openURL('mailto:info@yourcompany.com');
+    Linking.openURL('mailto:bagroomcaddy.com');
   };
 
   const renderInfoItem = (
@@ -67,8 +67,8 @@ export default function AboutScreen() {
               style={styles.logo}
             />
           </View>
-          <Text style={styles.appName}>Your App Name</Text>
-          <Text style={styles.appTagline}>Professional bag and order management</Text>
+          <Text style={styles.appName}>Bagroom Caddy</Text>
+          <Text style={styles.appTagline}>Professional Golf Club Management</Text>
           <Text style={styles.version}>Version 1.0.0</Text>
         </View>
 
@@ -79,21 +79,21 @@ export default function AboutScreen() {
           {renderInfoItem(
             <Globe size={24} color={colors.primary} />,
             'Website',
-            'www.yourcompany.com',
+            'www.bagroomcaddy.com',
             handleWebsitePress
           )}
           
           {renderInfoItem(
             <Mail size={24} color={colors.primary} />,
             'Contact Email',
-            'info@yourcompany.com',
+            'bagroomcaddy.com',
             handleEmailPress
           )}
           
           {renderInfoItem(
             <MapPin size={24} color={colors.primary} />,
             'Location',
-            'Your City, Your State, Your Country'
+            'Houston, Texas, United States'
           )}
         </View>
 
@@ -102,9 +102,7 @@ export default function AboutScreen() {
           <Text style={styles.sectionTitle}>About This App</Text>
           <View style={styles.aboutCard}>
             <Text style={styles.aboutText}>
-              This app was designed to streamline bag and order management for dry cleaning and laundry businesses. 
-              Our mission is to provide an intuitive, efficient solution that helps businesses manage their operations 
-              while delivering exceptional customer service.
+              Bagroom Caddy is a specialized app designed to streamline and enhance the management of members&apos; golf bags at clubs. By providing precise, real-time tracking and organization, the app ensures an efficient and seamless bagroom operation, reducing errors and wait times. With a user-friendly interface tailored for club staff, Bagroom Caddy supports elevated member service, helping clubs maintain their high standards of professionalism and care. Our goal is to simplify bag tracking so clubs can focus on delivering an exceptional experience to their members.
             </Text>
           </View>
         </View>
@@ -115,7 +113,7 @@ export default function AboutScreen() {
           
           {renderFeature(
             'Bag Management',
-            'Easily track and manage customer bags with detailed information and status updates.'
+            'Easily track and manage member golf bags with detailed information and status updates.'
           )}
           
           {renderFeature(
@@ -127,49 +125,16 @@ export default function AboutScreen() {
             'Smart Search',
             'Quickly find bags and orders using our powerful search functionality.'
           )}
-          
-          {renderFeature(
-            'QR Code Integration',
-            'Generate and scan QR codes for efficient bag and order identification.'
-          )}
-          
-          {renderFeature(
-            'Cloud Sync',
-            'Your data is automatically synced across all your devices for seamless access.'
-          )}
         </View>
 
-        {/* Stats */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Our Impact</Text>
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Users size={32} color={colors.primary} />
-              <Text style={styles.statNumber}>1,000+</Text>
-              <Text style={styles.statLabel}>Active Users</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Award size={32} color={colors.success} />
-              <Text style={styles.statNumber}>50,000+</Text>
-              <Text style={styles.statLabel}>Orders Processed</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Heart size={32} color={colors.danger} />
-              <Text style={styles.statNumber}>99%</Text>
-              <Text style={styles.statLabel}>Satisfaction Rate</Text>
-            </View>
-          </View>
-        </View>
+
 
         {/* Credits */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Credits</Text>
           <View style={styles.creditsCard}>
             <Text style={styles.creditsText}>
-              Developed with ❤️ by Your Development Team
-            </Text>
-            <Text style={styles.creditsSubtext}>
-              Special thanks to all our beta testers and the amazing community that helped shape this app.
+              Bagroom Caddy was created by a former member services professional with firsthand experience in club operations. Special thanks to the early users and club partners for their valuable feedback. Built to improve efficiency and elevate service.
             </Text>
           </View>
         </View>
@@ -180,28 +145,28 @@ export default function AboutScreen() {
           
           <TouchableOpacity 
             style={styles.legalItem}
-            onPress={() => Linking.openURL('https://yourcompany.com/privacy')}
+            onPress={() => router.push('/privacy-policy')}
           >
             <Text style={styles.legalText}>Privacy Policy</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
             style={styles.legalItem}
-            onPress={() => Linking.openURL('https://yourcompany.com/terms')}
+            onPress={() => router.push('/terms-of-service')}
           >
             <Text style={styles.legalText}>Terms of Service</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
             style={styles.legalItem}
-            onPress={() => Linking.openURL('https://yourcompany.com/licenses')}
+            onPress={() => router.push('/open-source-licenses')}
           >
             <Text style={styles.legalText}>Open Source Licenses</Text>
           </TouchableOpacity>
         </View>
 
         <Text style={styles.copyright}>
-          © 2024 Your Company Name. All rights reserved.
+          © 2024 Bagroom Caddy. All rights reserved.
         </Text>
       </ScrollView>
     </SafeAreaView>

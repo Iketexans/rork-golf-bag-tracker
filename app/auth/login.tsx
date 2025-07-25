@@ -146,10 +146,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     justifyContent: 'center',
+    paddingTop: 60,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 48,
+    marginBottom: 40,
   },
   logoContainer: {
     width: 80,
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -166,10 +167,11 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     color: colors.text,
     marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,

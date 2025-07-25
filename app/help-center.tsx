@@ -2,21 +2,16 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
-import { ArrowLeft, Mail, Phone, MessageCircle, ExternalLink } from 'lucide-react-native';
+import { ArrowLeft, Mail, Phone, ExternalLink } from 'lucide-react-native';
 import colors from '@/constants/colors';
 
 export default function HelpCenterScreen() {
   const handleEmailPress = () => {
-    Linking.openURL('mailto:support@yourcompany.com');
+    Linking.openURL('mailto:bagroomcaddy.com');
   };
 
   const handlePhonePress = () => {
-    Linking.openURL('tel:+1234567890');
-  };
-
-  const handleChatPress = () => {
-    // Replace with your chat support URL or deep link
-    Linking.openURL('https://yourcompany.com/chat');
+    Linking.openURL('tel:+18325705545');
   };
 
   const renderFAQItem = (question: string, answer: string) => (
@@ -65,22 +60,15 @@ export default function HelpCenterScreen() {
           {renderContactOption(
             <Mail size={24} color={colors.primary} />,
             'Email Support',
-            'support@yourcompany.com',
+            'bagroomcaddy.com',
             handleEmailPress
           )}
           
           {renderContactOption(
             <Phone size={24} color={colors.primary} />,
             'Phone Support',
-            '+1 (234) 567-8900',
+            '832-570-5545',
             handlePhonePress
-          )}
-          
-          {renderContactOption(
-            <MessageCircle size={24} color={colors.primary} />,
-            'Live Chat',
-            'Chat with our support team',
-            handleChatPress
           )}
         </View>
 
@@ -119,28 +107,7 @@ export default function HelpCenterScreen() {
           )}
         </View>
 
-        {/* Additional Resources */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Additional Resources</Text>
-          
-          <TouchableOpacity 
-            style={styles.resourceItem}
-            onPress={() => Linking.openURL('https://yourcompany.com/user-guide')}
-          >
-            <Text style={styles.resourceTitle}>User Guide</Text>
-            <Text style={styles.resourceSubtitle}>Complete guide to using the app</Text>
-            <ExternalLink size={16} color={colors.textSecondary} />
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.resourceItem}
-            onPress={() => Linking.openURL('https://yourcompany.com/video-tutorials')}
-          >
-            <Text style={styles.resourceTitle}>Video Tutorials</Text>
-            <Text style={styles.resourceSubtitle}>Step-by-step video guides</Text>
-            <ExternalLink size={16} color={colors.textSecondary} />
-          </TouchableOpacity>
-        </View>
+
       </ScrollView>
     </SafeAreaView>
   );
