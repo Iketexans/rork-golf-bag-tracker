@@ -38,7 +38,11 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <RootLayoutNav />
+    </GestureHandlerRootView>
+  );
 }
 
 function RootLayoutNav() {
@@ -77,7 +81,7 @@ function RootLayoutNav() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <>
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
@@ -116,6 +120,6 @@ function RootLayoutNav() {
           }} 
         />
       </Stack>
-    </GestureHandlerRootView>
+    </>
   );
 }
