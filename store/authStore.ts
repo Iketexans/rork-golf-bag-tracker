@@ -93,6 +93,8 @@ export const useAuthStore = create<AuthState>()(
           subscriptionExpiry: null,
           isSubscriptionActive: false,
         });
+        // Clear persisted storage
+        AsyncStorage.removeItem('auth-storage');
       },
 
       setSubscription: (plan: SubscriptionPlan, expiryDate: string) => {
