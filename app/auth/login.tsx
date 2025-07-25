@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { useRouter, Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
-import colors from '@/constants/colors';
-import { User, Lock, Building } from 'lucide-react-native';
+import { useTheme } from '@/store/themeStore';
+import { User, Lock, Building, Mail } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
   
   const { login, isAuthenticated, isSubscriptionActive, user } = useAuthStore();
+  const { colors } = useTheme();
   const router = useRouter();
+  
+  const styles = createStyles(colors);
 
   // Check if user is already authenticated and redirect
   useEffect(() => {
@@ -21,8 +26,6 @@ export default function LoginScreen() {
         router.replace('/owner-dashboard');
       } else if (isSubscriptionActive) {
         router.replace('/(tabs)');
-      } else {
-        router.replace('/auth/subscription');
       }
     }
   }, [isAuthenticated, isSubscriptionActive, user]);
@@ -52,6 +55,32 @@ export default function LoginScreen() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!resetEmail.trim()) {
+      Alert.alert('Error', 'Please enter your email address');
+      return;
+    }
+
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+
+    // Simulate password reset email
+    Alert.alert(
+      'Password Reset',
+      `A password reset link has been sent to ${resetEmail}. Please check your email and follow the instructions to reset your password.`,
+      [
+        {
+          text: 'OK',
+          onPress: () => {
+            setShowForgotPassword(false);
+            setResetEmail('');
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -112,21 +141,12 @@ export default function LoginScreen() {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.forgotPassword}>
+          <TouchableOpacity 
+            style={styles.forgotPassword}
+            onPress={() => setShowForgotPassword(true)}
+          >
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
-
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          <Link href="/auth/create-account" asChild>
-            <TouchableOpacity style={styles.createAccountButton}>
-              <Text style={styles.createAccountText}>Create New Account</Text>
-            </TouchableOpacity>
-          </Link>
         </View>
 
         <View style={styles.footer}>
@@ -135,11 +155,56 @@ export default function LoginScreen() {
           </Text>
         </View>
       </View>
+
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Reset Password</Text>
+            <Text style={styles.modalSubtitle}>
+              Enter your email address and we'll send you a link to reset your password.
+            </Text>
+            
+            <View style={styles.inputContainer}>
+              <Mail size={20} color={colors.textSecondary} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                value={resetEmail}
+                onChangeText={setResetEmail}
+                placeholder="Enter your email"
+                placeholderTextColor={colors.textSecondary}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </View>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalCancelButton}
+                onPress={() => {
+                  setShowForgotPassword(false);
+                  setResetEmail('');
+                }}
+              >
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={styles.modalResetButton}
+                onPress={handleForgotPassword}
+              >
+                <Text style={styles.modalResetText}>Send Reset Link</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
     </KeyboardAvoidingView>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -147,11 +212,11 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 24,
-    justifyContent: 'center',
+    justifyContent: 'center' as const,
     paddingTop: 60,
   },
   header: {
-    alignItems: 'center',
+    alignItems: 'center' as const,
     marginBottom: 40,
   },
   logoContainer: {
@@ -159,8 +224,8 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 20,
     backgroundColor: colors.card,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
     marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -170,15 +235,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: 'bold' as const,
     color: colors.text,
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: 'center' as const,
   },
   subtitle: {
     fontSize: 16,
     color: colors.textSecondary,
-    textAlign: 'center',
+    textAlign: 'center' as const,
   },
   form: {
     marginBottom: 32,
@@ -188,13 +253,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '500' as const,
     color: colors.text,
     marginBottom: 8,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
     backgroundColor: colors.card,
     borderRadius: 12,
     borderWidth: 1,
@@ -214,7 +279,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: 12,
     paddingVertical: 16,
-    alignItems: 'center',
+    alignItems: 'center' as const,
     marginTop: 8,
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
@@ -228,53 +293,92 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '600' as const,
   },
   forgotPassword: {
-    alignItems: 'center',
+    alignItems: 'center' as const,
     marginTop: 16,
   },
   forgotPasswordText: {
     color: colors.primary,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '500' as const,
   },
   footer: {
-    alignItems: 'center',
+    alignItems: 'center' as const,
   },
   footerText: {
     fontSize: 14,
     color: colors.textSecondary,
-    textAlign: 'center',
+    textAlign: 'center' as const,
     lineHeight: 20,
   },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 24,
+  modalOverlay: {
+    position: 'absolute' as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
+    padding: 24,
   },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.border,
+  modalContent: {
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 8,
   },
-  dividerText: {
-    marginHorizontal: 16,
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold' as const,
+    color: colors.text,
+    marginBottom: 8,
+    textAlign: 'center' as const,
+  },
+  modalSubtitle: {
     fontSize: 14,
     color: colors.textSecondary,
-    fontWeight: '500',
+    textAlign: 'center' as const,
+    marginBottom: 24,
+    lineHeight: 20,
   },
-  createAccountButton: {
+  modalButtons: {
+    flexDirection: 'row' as const,
+    gap: 12,
+    marginTop: 24,
+  },
+  modalCancelButton: {
+    flex: 1,
     backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: colors.primary,
+    borderWidth: 1,
+    borderColor: colors.border,
     borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: 'center',
+    paddingVertical: 12,
+    alignItems: 'center' as const,
   },
-  createAccountText: {
-    color: colors.primary,
+  modalCancelText: {
+    color: colors.textSecondary,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500' as const,
+  },
+  modalResetButton: {
+    flex: 1,
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: 'center' as const,
+  },
+  modalResetText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600' as const,
   },
 });

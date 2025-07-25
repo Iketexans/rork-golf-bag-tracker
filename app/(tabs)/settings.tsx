@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Switch, ScrollView, Alert, Platform } from 'react-native';
-import colors from '@/constants/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronRight, Info, Bell, Moon, HelpCircle, LogOut, Crown, User, Building } from 'lucide-react-native';
+import { ChevronRight, Bell, Moon, HelpCircle, LogOut, User, Building } from 'lucide-react-native';
 import { useAuthStore } from '@/store/authStore';
+import { useTheme } from '@/store/themeStore';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 
 export default function SettingsScreen() {
-  const [darkMode, setDarkMode] = React.useState(false);
-  const [notifications, setNotifications] = React.useState(true);
-  const { user, subscriptionPlan, subscriptionExpiry, logout } = useAuthStore();
+  const [notifications, setNotifications] = useState(true);
+  const { user, logout } = useAuthStore();
+  const { colors, isDarkMode, setTheme, themeMode } = useTheme();
 
   const handlePress = () => {
     if (Platform.OS !== 'web') {
@@ -19,8 +19,9 @@ export default function SettingsScreen() {
   };
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
     handlePress();
+    const newMode = isDarkMode ? 'light' : 'dark';
+    setTheme(newMode);
   };
 
   const toggleNotifications = () => {
@@ -53,14 +54,9 @@ export default function SettingsScreen() {
     );
   };
 
-  const formatExpiryDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
+
+
+  const styles = createStyles(colors);
 
   const renderSettingItem = (
     icon: React.ReactNode,
@@ -104,17 +100,6 @@ export default function SettingsScreen() {
                 <Building size={16} color={colors.textSecondary} />
                 <Text style={styles.accountText}>{user?.clubName}</Text>
               </View>
-              <View style={styles.accountDetail}>
-                <Crown size={16} color={colors.warning} />
-                <Text style={styles.accountText}>
-                  {subscriptionPlan === 'monthly' ? 'Monthly Plan' : 'Annual Plan'}
-                </Text>
-              </View>
-              {subscriptionExpiry && (
-                <Text style={styles.expiryText}>
-                  Expires: {formatExpiryDate(subscriptionExpiry)}
-                </Text>
-              )}
             </View>
           </View>
         </View>
@@ -126,7 +111,7 @@ export default function SettingsScreen() {
             'Dark Mode',
             undefined,
             <Switch
-              value={darkMode}
+              value={isDarkMode}
               onValueChange={toggleDarkMode}
               trackColor={{ false: colors.inactive, true: colors.primary }}
               thumbColor="white"
@@ -145,19 +130,7 @@ export default function SettingsScreen() {
           )}
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Subscription</Text>
-          {renderSettingItem(
-            <Crown size={20} color={colors.warning} style={styles.settingIcon} />,
-            'Manage Subscription',
-            () => console.log('Manage subscription pressed')
-          )}
-          {renderSettingItem(
-            <Info size={20} color={colors.primary} style={styles.settingIcon} />,
-            'Billing History',
-            () => console.log('Billing history pressed')
-          )}
-        </View>
+
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Support</Text>
@@ -165,11 +138,6 @@ export default function SettingsScreen() {
             <HelpCircle size={20} color={colors.primary} style={styles.settingIcon} />,
             'Help Center',
             () => router.push('/help-center')
-          )}
-          {renderSettingItem(
-            <Info size={20} color={colors.primary} style={styles.settingIcon} />,
-            'About',
-            () => router.push('/about')
           )}
         </View>
 
@@ -186,7 +154,7 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -199,7 +167,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: 'bold' as const,
     color: colors.text,
   },
   section: {
@@ -207,7 +175,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '600' as const,
     color: colors.text,
     marginBottom: 12,
   },
@@ -225,19 +193,19 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   accountHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
     marginBottom: 4,
   },
   accountName: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '600' as const,
     color: colors.text,
     marginLeft: 8,
   },
   accountDetail: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
   },
   accountText: {
     fontSize: 14,
@@ -247,13 +215,13 @@ const styles = StyleSheet.create({
   expiryText: {
     fontSize: 12,
     color: colors.textSecondary,
-    fontStyle: 'italic',
+    fontStyle: 'italic' as const,
     marginTop: 4,
   },
   settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'space-between' as const,
     paddingVertical: 16,
     paddingHorizontal: 16,
     backgroundColor: colors.card,
@@ -266,8 +234,8 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   settingItemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
   },
   settingIcon: {
     marginRight: 12,
@@ -277,9 +245,9 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
     backgroundColor: colors.danger,
     paddingVertical: 16,
     borderRadius: 12,
@@ -290,10 +258,10 @@ const styles = StyleSheet.create({
   logoutText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '600' as const,
   },
   versionText: {
-    textAlign: 'center',
+    textAlign: 'center' as const,
     color: colors.textSecondary,
     marginTop: 16,
     marginBottom: 24,

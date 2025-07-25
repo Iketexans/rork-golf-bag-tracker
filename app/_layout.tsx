@@ -5,9 +5,9 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Platform, View } from "react-native";
-import colors from "@/constants/colors";
 import { useDeepLinking } from "@/hooks/useDeepLinking";
 import { useAuthStore } from "@/store/authStore";
+import { ThemeProvider, useTheme } from "@/store/themeStore";
 
 // Conditional import for gesture handler
 let GestureHandlerRootView: any = View;
@@ -53,13 +53,16 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <RootLayoutNav />
+      <ThemeProvider>
+        <RootLayoutNav />
+      </ThemeProvider>
     </GestureHandlerRootView>
   );
 }
 
 function RootLayoutNav() {
   const { isAuthenticated, isSubscriptionActive, isInitialized } = useAuthStore();
+  const { colors, isDarkMode, isLoaded } = useTheme();
   
   // Initialize deep linking only after auth is ready
   useDeepLinking();
@@ -67,7 +70,7 @@ function RootLayoutNav() {
   console.log('RootLayoutNav - Auth state:', { isAuthenticated, isSubscriptionActive, isInitialized });
 
   // Show loading while initializing
-  if (!isInitialized) {
+  if (!isInitialized || !isLoaded) {
     console.log('Not initialized, showing loading');
     return null;
   }
@@ -77,7 +80,7 @@ function RootLayoutNav() {
     console.log('Not authenticated, showing auth screen');
     return (
       <>
-        <StatusBar style="dark" />
+        <StatusBar style={isDarkMode ? "light" : "dark"} />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="auth" />
         </Stack>
@@ -90,7 +93,7 @@ function RootLayoutNav() {
     console.log('Subscription not active, showing auth screen');
     return (
       <>
-        <StatusBar style="dark" />
+        <StatusBar style={isDarkMode ? "light" : "dark"} />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="auth" />
         </Stack>
@@ -100,7 +103,7 @@ function RootLayoutNav() {
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={isDarkMode ? "light" : "dark"} />
       <Stack
         screenOptions={{
           headerBackTitle: "Back",
