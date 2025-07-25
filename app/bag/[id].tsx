@@ -73,6 +73,7 @@ export default function BagDetailScreen() {
               <ArrowLeft size={24} color={colors.primary} />
             </TouchableOpacity>
           ),
+          headerBackVisible: false,
         }} 
       />
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -185,10 +186,11 @@ const styles = StyleSheet.create({
   },
   profileSection: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 24,
     backgroundColor: colors.card,
     borderRadius: 12,
-    padding: 16,
+    padding: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -196,9 +198,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     marginRight: 16,
   },
   profileImagePlaceholder: {
@@ -208,7 +210,7 @@ const styles = StyleSheet.create({
   },
   profileImagePlaceholderText: {
     color: 'white',
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
   },
   profileInfo: {
@@ -246,6 +248,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'flex-start',
   },
   section: {
     backgroundColor: colors.card,

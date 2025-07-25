@@ -117,6 +117,7 @@ export default function OrderDetailScreen() {
               <ArrowLeft size={24} color={colors.primary} />
             </TouchableOpacity>
           ),
+          headerBackVisible: false,
         }} 
       />
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
