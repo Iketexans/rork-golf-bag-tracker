@@ -10,7 +10,6 @@ interface StatusCardProps {
 
 export default function StatusCard({ location, count }: StatusCardProps) {
   const { colors } = useTheme();
-  const styles = createStyles(colors);
   
   const getCardStyle = () => {
     switch (location) {
@@ -38,6 +37,42 @@ export default function StatusCard({ location, count }: StatusCardProps) {
     }
   };
 
+  const styles = StyleSheet.create({
+    card: {
+      flex: 1,
+      borderRadius: 12,
+      padding: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginHorizontal: 4,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    bagroomCard: {
+      backgroundColor: colors.primary,
+    },
+    playerCard: {
+      backgroundColor: colors.warning,
+    },
+    courseCard: {
+      backgroundColor: colors.success,
+    },
+    count: {
+      fontSize: 28,
+      fontWeight: 'bold' as const,
+      color: 'white',
+      marginBottom: 4,
+    },
+    title: {
+      fontSize: 14,
+      fontWeight: '500' as const,
+      color: 'white',
+    },
+  });
+
   return (
     <View style={[styles.card, getCardStyle()]}>
       <Text style={styles.count}>{count}</Text>
@@ -45,39 +80,3 @@ export default function StatusCard({ location, count }: StatusCardProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    flex: 1,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  bagroomCard: {
-    backgroundColor: colors.primary,
-  },
-  playerCard: {
-    backgroundColor: colors.warning,
-  },
-  courseCard: {
-    backgroundColor: colors.success,
-  },
-  count: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 4,
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: 'white',
-  },
-});
