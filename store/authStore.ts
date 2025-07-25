@@ -19,6 +19,7 @@ interface ClubAccount {
   username: string;
   email: string;
   clubName: string;
+  password: string;
   createdAt: string;
   subscriptionPlan: SubscriptionPlan;
   subscriptionExpiry: string | null;
@@ -111,7 +112,7 @@ export const useAuthStore = create<AuthState>()(
         // Check for club account login
         const { clubAccounts } = get();
         const clubAccount = clubAccounts.find(account => 
-          account.username === username && account.id === password // Using ID as password for simplicity
+          account.username === username && account.password === password
         );
         
         if (clubAccount) {
@@ -171,6 +172,7 @@ export const useAuthStore = create<AuthState>()(
             username,
             email,
             clubName,
+            password,
             createdAt: new Date().toISOString(),
             subscriptionPlan: null,
             subscriptionExpiry: null,

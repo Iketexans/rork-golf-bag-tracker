@@ -2,19 +2,22 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { useBagStore } from '@/store/bagStore';
 import { useAuthStore } from '@/store/authStore';
+import { useTheme } from '@/store/themeStore';
 import StatusCard from '@/components/StatusCard';
 import BagListItem from '@/components/BagListItem';
-import colors from '@/constants/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Star, Users } from 'lucide-react-native';
 
 export default function DashboardScreen() {
   const { getLocationCounts, getBagsByLocation, getMemberById, getStarredBags } = useBagStore();
   const { user } = useAuthStore();
+  const { colors } = useTheme();
   
   const counts = getLocationCounts();
   const recentBags = getBagsByLocation('bagroom').slice(0, 5);
   const starredBags = getStarredBags();
+  
+  const styles = createStyles(colors);
 
   return (
     <SafeAreaView edges={['bottom']} style={styles.container}>
@@ -78,7 +81,7 @@ export default function DashboardScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

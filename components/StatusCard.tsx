@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import colors from '@/constants/colors';
+import { useTheme } from '@/store/themeStore';
 import { BagLocation } from '@/types/bag';
 
 interface StatusCardProps {
@@ -9,6 +9,9 @@ interface StatusCardProps {
 }
 
 export default function StatusCard({ location, count }: StatusCardProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+  
   const getCardStyle = () => {
     switch (location) {
       case 'bagroom':

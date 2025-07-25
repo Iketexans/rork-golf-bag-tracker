@@ -1,9 +1,11 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import colors from "@/constants/colors";
+import { useTheme } from "@/store/themeStore";
 import { Flag, Home, Search, Settings, ClipboardList } from "lucide-react-native";
 
 export default function TabLayout() {
+  const { colors } = useTheme();
+  
   return (
     <Tabs
       screenOptions={{
@@ -16,6 +18,7 @@ export default function TabLayout() {
         headerStyle: {
           backgroundColor: colors.background,
         },
+        headerTintColor: colors.text,
         headerShadowVisible: false,
         tabBarLabelStyle: {
           fontSize: 12,

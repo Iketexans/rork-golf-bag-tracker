@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { Bag, Member } from '@/types/bag';
-import colors from '@/constants/colors';
+import { useTheme } from '@/store/themeStore';
 import { formatDistanceToNow } from '@/utils/dateUtils';
 import { useRouter } from 'expo-router';
 import { useBagStore } from '@/store/bagStore';
@@ -18,7 +18,10 @@ interface BagListItemProps {
 export default function BagListItem({ bag, member, showStarButton = true }: BagListItemProps) {
   const router = useRouter();
   const { toggleStarBag, isBagStarred } = useBagStore();
+  const { colors } = useTheme();
   const isStarred = isBagStarred(bag.id);
+  
+  const styles = createStyles(colors);
 
   const getStatusColor = () => {
     switch (bag.location) {
@@ -115,7 +118,7 @@ export default function BagListItem({ bag, member, showStarButton = true }: BagL
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: colors.card,

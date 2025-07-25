@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, TextInput, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
-import colors from '@/constants/colors';
-import { Users, Plus, Trash2, Calendar, DollarSign, Building, Mail, User, X } from 'lucide-react-native';
+import { useTheme } from '@/store/themeStore';
+import { Users, Plus, Trash2, Calendar, DollarSign, Building, Mail, User, X, Lock } from 'lucide-react-native';
 import { Stack } from 'expo-router';
 
 export default function OwnerDashboard() {
@@ -16,6 +16,7 @@ export default function OwnerDashboard() {
   });
   
   const { user, clubAccounts, createClubAccount, deleteClubAccount, logout } = useAuthStore();
+  const { colors } = useTheme();
   const router = useRouter();
 
   useEffect(() => {
@@ -92,6 +93,8 @@ export default function OwnerDashboard() {
       daysLeft: 0,
     };
   };
+
+  const styles = createStyles(colors);
 
   if (!user || user.role !== 'owner') {
     return null;
@@ -195,7 +198,7 @@ export default function OwnerDashboard() {
                     <View style={styles.credentialsContainer}>
                       <Text style={styles.credentialsTitle}>Login Credentials:</Text>
                       <Text style={styles.credentialsText}>Username: {account.username}</Text>
-                      <Text style={styles.credentialsText}>Password: {account.id}</Text>
+                      <Text style={styles.credentialsText}>Password: {account.password}</Text>
                     </View>
                   </View>
                 </View>
@@ -270,16 +273,18 @@ export default function OwnerDashboard() {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Password</Text>
               <View style={styles.inputContainer}>
+                <Lock size={20} color={colors.textSecondary} style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   value={newAccount.password}
                   onChangeText={(text) => setNewAccount({ ...newAccount, password: text })}
-                  placeholder="This will be auto-generated"
+                  placeholder="Enter custom password"
                   placeholderTextColor={colors.textSecondary}
-                  editable={false}
+                  secureTextEntry
+                  autoCapitalize="none"
                 />
               </View>
-              <Text style={styles.helperText}>Password will be the account ID (auto-generated)</Text>
+              <Text style={styles.helperText}>Create a custom password for this club account</Text>
             </View>
           </ScrollView>
           
@@ -304,7 +309,7 @@ export default function OwnerDashboard() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
