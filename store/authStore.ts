@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 export type SubscriptionPlan = 'monthly' | 'yearly' | null;
 
@@ -86,6 +87,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        console.log('Logout called');
         set({
           isAuthenticated: false,
           user: null,
@@ -94,7 +96,15 @@ export const useAuthStore = create<AuthState>()(
           isSubscriptionActive: false,
         });
         // Clear persisted storage
-        AsyncStorage.removeItem('auth-storage');
+        AsyncStorage.removeItem('auth-storage').then(() => {
+          console.log('Auth storage cleared');
+          // Force page reload on web, restart app on mobile
+          if (Platform.OS === 'web') {
+            window.location?.reload?.();
+          }
+        }).catch((error) => {
+          console.error('Error clearing auth storage:', error);
+        });
       },
 
       setSubscription: (plan: SubscriptionPlan, expiryDate: string) => {

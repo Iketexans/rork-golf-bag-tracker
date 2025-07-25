@@ -51,13 +51,17 @@ function RootLayoutNav() {
   // Initialize deep linking only after auth is ready
   useDeepLinking();
 
+  console.log('RootLayoutNav - Auth state:', { isAuthenticated, isSubscriptionActive, isInitialized });
+
   // Show loading while initializing
   if (!isInitialized) {
+    console.log('Not initialized, showing loading');
     return null;
   }
 
   // Check authentication status
   if (!isAuthenticated) {
+    console.log('Not authenticated, showing auth screen');
     return (
       <>
         <StatusBar style="dark" />
@@ -70,6 +74,7 @@ function RootLayoutNav() {
 
   // Check subscription status
   if (!isSubscriptionActive) {
+    console.log('Subscription not active, showing auth screen');
     return (
       <>
         <StatusBar style="dark" />

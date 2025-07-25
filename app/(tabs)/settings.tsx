@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronRight, Info, Bell, Moon, HelpCircle, LogOut, Crown, User, Building } from 'lucide-react-native';
 import { useAuthStore } from '@/store/authStore';
 import * as Haptics from 'expo-haptics';
+import { router } from 'expo-router';
 
 export default function SettingsScreen() {
   const [darkMode, setDarkMode] = React.useState(false);
@@ -40,7 +41,12 @@ export default function SettingsScreen() {
           text: 'Logout',
           style: 'destructive',
           onPress: () => {
+            console.log('Logout button pressed');
             logout();
+            // Force navigation to auth screen
+            setTimeout(() => {
+              router.replace('/auth/login');
+            }, 100);
           },
         },
       ]
