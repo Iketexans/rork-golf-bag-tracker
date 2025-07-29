@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
 import { useTheme } from '@/store/themeStore';
-import { User, Lock, Building, Mail } from 'lucide-react-native';
+import { User, Lock, Mail } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 
 export default function LoginScreen() {
@@ -91,7 +91,11 @@ export default function LoginScreen() {
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={styles.logoContainer}>
-            <Building size={48} color={colors.primary} />
+            <Image 
+              source={{ uri: 'https://r2-pub.rork.com/attachments/8qoyb7yd27w88mn2ed6oq' }}
+              style={styles.logo}
+              resizeMode="contain"
+            />
           </View>
           <Text style={styles.title}>Bagroom Caddy</Text>
           <Text style={styles.subtitle}>Professional Golf Club Management</Text>
@@ -223,15 +227,15 @@ const createStyles = (colors: any) => StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 20,
-    backgroundColor: colors.card,
+    backgroundColor: 'transparent',
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    overflow: 'hidden' as const,
+  },
+  logo: {
+    width: 80,
+    height: 80,
   },
   title: {
     fontSize: 32,
