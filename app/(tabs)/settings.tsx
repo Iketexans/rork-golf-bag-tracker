@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Switch, ScrollView, Alert, Platform } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronRight, Bell, HelpCircle, LogOut, User, Building, Shield, FileText, Code } from 'lucide-react-native';
+import { ChevronRight, HelpCircle, LogOut, User, Building, Shield, FileText, Code, Info } from 'lucide-react-native';
 import { useAuthStore } from '@/store/authStore';
 import { useTheme } from '@/store/themeStore';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 
 export default function SettingsScreen() {
-  const [notifications, setNotifications] = useState(true);
   const { user, logout } = useAuthStore();
   const { colors } = useTheme();
 
@@ -16,11 +15,6 @@ export default function SettingsScreen() {
     if (Platform.OS !== 'web') {
       Haptics.selectionAsync();
     }
-  };
-
-  const toggleNotifications = () => {
-    setNotifications(!notifications);
-    handlePress();
   };
 
   const handleLogout = () => {
@@ -98,20 +92,7 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-          {renderSettingItem(
-            <Bell size={20} color={colors.primary} style={styles.settingIcon} />,
-            'Notifications',
-            undefined,
-            <Switch
-              value={notifications}
-              onValueChange={toggleNotifications}
-              trackColor={{ false: colors.inactive, true: colors.primary }}
-              thumbColor="white"
-            />
-          )}
-        </View>
+
 
 
 
@@ -121,6 +102,11 @@ export default function SettingsScreen() {
             <HelpCircle size={20} color={colors.primary} style={styles.settingIcon} />,
             'Help Center',
             () => router.push('/help-center')
+          )}
+          {renderSettingItem(
+            <Info size={20} color={colors.primary} style={styles.settingIcon} />,
+            'About',
+            () => router.push('/about')
           )}
         </View>
 

@@ -48,7 +48,7 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
   };
 
   const handleSubmit = () => {
-    if (!memberName.trim() || !membershipId.trim() || !bagNumber.trim()) {
+    if (!memberName.trim() || !bagNumber.trim()) {
       Alert.alert('Error', 'Please fill in all required fields');
       return;
     }
@@ -62,7 +62,7 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
     addMember({
       id: memberId,
       name: memberName.trim(),
-      membershipId: membershipId.trim(),
+      membershipId: membershipId.trim() || undefined,
     });
 
     // Create new bag
@@ -233,14 +233,14 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Membership ID *</Text>
+              <Text style={styles.label}>Membership ID (Optional)</Text>
               <View style={styles.inputContainer}>
                 <Hash size={20} color={colors.textSecondary} style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   value={membershipId}
                   onChangeText={setMembershipId}
-                  placeholder="Enter membership ID"
+                  placeholder="Enter membership ID (optional)"
                   placeholderTextColor={colors.textSecondary}
                 />
               </View>

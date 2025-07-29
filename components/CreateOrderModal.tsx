@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,7 +10,7 @@ import {
   Alert,
   Platform,
 } from 'react-native';
-import { X, Package, User, DollarSign, Calendar } from 'lucide-react-native';
+import { X, Package, User, DollarSign, Calendar, Search } from 'lucide-react-native';
 import colors from '@/constants/colors';
 import { useOrderStore } from '@/store/orderStore';
 import { useBagStore } from '@/store/bagStore';
@@ -33,10 +33,24 @@ export default function CreateOrderModal({ visible, onClose, preselectedBagId }:
   const [targetLocation, setTargetLocation] = useState('');
   const [estimatedCost, setEstimatedCost] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { createOrder } = useOrderStore();
   const { getCurrentUserBags, getMemberById } = useBagStore();
-  const bags = getCurrentUserBags();
+  const allBags = getCurrentUserBags();
+  
+  const filteredBags = useMemo(() => {
+    if (!searchQuery.trim()) return allBags;
+    
+    return allBags.filter(bag => {
+      const member = getMemberById(bag.memberId);
+      const memberName = member?.name.toLowerCase() || '';
+      const bagNumber = bag.bagNumber.toLowerCase();
+      const query = searchQuery.toLowerCase();
+      
+      return memberName.includes(query) || bagNumber.includes(query);
+    });
+  }, [allBags, searchQuery, getMemberById]);
 
   const resetForm = () => {
     setSelectedBagId(preselectedBagId || '');
@@ -48,6 +62,7 @@ export default function CreateOrderModal({ visible, onClose, preselectedBagId }:
     setTargetLocation('');
     setEstimatedCost('');
     setDueDate('');
+    setSearchQuery('');
   };
 
   const handleClose = () => {
@@ -56,12 +71,12 @@ export default function CreateOrderModal({ visible, onClose, preselectedBagId }:
   };
 
   const handleSubmit = () => {
-    if (!selectedBagId || !description.trim() || !requestedBy.trim()) {
-      Alert.alert('Error', 'Please fill in all required fields');
+    if (!selectedBagId) {
+      Alert.alert('Error', 'Please select a bag');
       return;
     }
 
-    const selectedBag = bags.find(bag => bag.id === selectedBagId);
+    const selectedBag = allBags.find(bag => bag.id === selectedBagId);
     if (!selectedBag) {
       Alert.alert('Error', 'Selected bag not found');
       return;
@@ -77,8 +92,8 @@ export default function CreateOrderModal({ visible, onClose, preselectedBagId }:
       type: orderType,
       status: 'pending',
       priority,
-      description: description.trim(),
-      requestedBy: requestedBy.trim(),
+      description: description.trim() || 'No description provided',
+      requestedBy: requestedBy.trim() || 'Not specified',
       notes: notes.trim() || undefined,
       targetLocation: (orderType === 'move' || orderType === 'ship') ? targetLocation : undefined,
       estimatedCost: estimatedCost ? parseFloat(estimatedCost) : undefined,
@@ -157,8 +172,18 @@ export default function CreateOrderModal({ visible, onClose, preselectedBagId }:
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.section}>
             <Text style={styles.label}>Select Bag *</Text>
+            <View style={styles.searchContainer}>
+              <Search size={20} color={colors.textSecondary} style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                placeholder="Search by member name or bag number..."
+                placeholderTextColor={colors.textSecondary}
+              />
+            </View>
             <ScrollView style={styles.bagSelector} nestedScrollEnabled>
-              {bags.map((bag) => {
+              {filteredBags.map((bag) => {
                 const member = getMemberById(bag.memberId);
                 return (
                   <TouchableOpacity
@@ -268,7 +293,7 @@ export default function CreateOrderModal({ visible, onClose, preselectedBagId }:
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.label}>Service Description *</Text>
+            <Text style={styles.label}>Service Description (Optional)</Text>
             <TextInput
               style={styles.textArea}
               value={description}
@@ -281,7 +306,7 @@ export default function CreateOrderModal({ visible, onClose, preselectedBagId }:
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.label}>Requested By *</Text>
+            <Text style={styles.label}>Requested By (Optional)</Text>
             <View style={styles.inputContainer}>
               <User size={20} color={colors.textSecondary} style={styles.inputIcon} />
               <TextInput
@@ -354,6 +379,25 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: colors.text,
     marginBottom: 12,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: 12,
+    marginBottom: 12,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: colors.text,
   },
   bagSelector: {
     maxHeight: 150,
