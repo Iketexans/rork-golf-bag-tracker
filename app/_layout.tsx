@@ -70,11 +70,14 @@ function RootLayoutNav() {
   
   // Set current user in stores when authenticated user changes
   useEffect(() => {
-    if (isAuthenticated && user) {
-      setBagCurrentUser(user.id);
-      setOrderCurrentUser(user.id);
+    if (isAuthenticated && user && isInitialized) {
+      // Use setTimeout to ensure this runs after the current render cycle
+      setTimeout(() => {
+        setBagCurrentUser(user.id);
+        setOrderCurrentUser(user.id);
+      }, 0);
     }
-  }, [isAuthenticated, user, setBagCurrentUser, setOrderCurrentUser]);
+  }, [isAuthenticated, user, isInitialized, setBagCurrentUser, setOrderCurrentUser]);
   
   // Initialize deep linking only after auth is ready
   useDeepLinking();

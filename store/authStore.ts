@@ -84,14 +84,6 @@ export const useAuthStore = create<AuthState>()(
           }
         }
         
-        // Set current user in other stores if authenticated
-        if (isAuthenticated && user) {
-          const { useBagStore } = require('./bagStore');
-          const { useOrderStore } = require('./orderStore');
-          useBagStore.getState().setCurrentUser(user.id);
-          useOrderStore.getState().setCurrentUser(user.id);
-        }
-        
         set({ 
           isInitialized: true,
           isSubscriptionActive 
@@ -126,12 +118,6 @@ export const useAuthStore = create<AuthState>()(
             user,
             isSubscriptionActive: true, // Owner always has access
           });
-          
-          // Set current user in other stores
-          const { useBagStore } = require('./bagStore');
-          const { useOrderStore } = require('./orderStore');
-          useBagStore.getState().setCurrentUser(user.id);
-          useOrderStore.getState().setCurrentUser(user.id);
           
           return true;
         }
@@ -172,12 +158,6 @@ export const useAuthStore = create<AuthState>()(
               subscriptionExpiry: clubAccount.subscriptionExpiry,
               isSubscriptionActive: isActive,
             });
-            
-            // Set current user in other stores
-            const { useBagStore } = require('./bagStore');
-            const { useOrderStore } = require('./orderStore');
-            useBagStore.getState().setCurrentUser(user.id);
-            useOrderStore.getState().setCurrentUser(user.id);
             
             return true;
           }
