@@ -64,6 +64,12 @@ function RootLayoutNav() {
   const { isAuthenticated, isSubscriptionActive, isInitialized } = useAuthStore();
   const { colors } = useTheme();
   
+  // Fallback colors in case theme is not properly initialized
+  const safeColors = colors || {
+    primary: '#3a7ca5',
+    background: '#f8f9fa',
+  };
+  
   // Initialize deep linking only after auth is ready
   useDeepLinking();
 
@@ -108,12 +114,12 @@ function RootLayoutNav() {
         screenOptions={{
           headerBackTitle: "Back",
           headerStyle: {
-            backgroundColor: colors.background,
+            backgroundColor: safeColors.background,
           },
           headerShadowVisible: false,
-          headerTintColor: colors.primary,
+          headerTintColor: safeColors.primary,
           contentStyle: {
-            backgroundColor: colors.background,
+            backgroundColor: safeColors.background,
           },
         }}
       >
