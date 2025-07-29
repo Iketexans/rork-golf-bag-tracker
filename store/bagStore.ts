@@ -220,15 +220,15 @@ export const useBagStore = create<BagState>()(
         const bags = getCurrentUserBags();
         const members = getCurrentUserMembers();
         
-        if (!searchQuery) return bags;
+        if (!searchQuery || !searchQuery.trim()) return bags;
 
         const lowerQuery = searchQuery.toLowerCase();
         return bags.filter((bag) => {
           const member = members.find((m) => m.id === bag.memberId);
           return (
-            bag.bagNumber.toLowerCase().includes(lowerQuery) ||
-            member?.name.toLowerCase().includes(lowerQuery) ||
-            member?.membershipId.toLowerCase().includes(lowerQuery)
+            (bag.bagNumber || '').toLowerCase().includes(lowerQuery) ||
+            (member?.name || '').toLowerCase().includes(lowerQuery) ||
+            (member?.membershipId || '').toLowerCase().includes(lowerQuery)
           );
         });
       },

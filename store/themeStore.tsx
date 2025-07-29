@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import colors from '@/constants/colors';
+import colorsImport from '@/constants/colors';
 
 const defaultColors = {
   primary: '#3a7ca5',
@@ -26,7 +26,7 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const themeValue = {
-    colors: colors || defaultColors,
+    colors: colorsImport || defaultColors,
   };
 
   return (

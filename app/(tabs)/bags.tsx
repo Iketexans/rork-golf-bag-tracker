@@ -29,14 +29,14 @@ export default function BagsScreen() {
     if (showStarredOnly && !starredBags.some(starred => starred.id === bag.id)) return false;
     
     // Filter by search query
-    if (searchQuery) {
+    if (searchQuery && searchQuery.trim()) {
       const member = members.find(m => m.id === bag.memberId);
       const query = searchQuery.toLowerCase();
       
       return (
-        bag.bagNumber.toLowerCase().includes(query) ||
-        member?.name.toLowerCase().includes(query) ||
-        member?.membershipId.toLowerCase().includes(query)
+        (bag.bagNumber || '').toLowerCase().includes(query) ||
+        (member?.name || '').toLowerCase().includes(query) ||
+        (member?.membershipId || '').toLowerCase().includes(query)
       );
     }
     
