@@ -3,9 +3,11 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Linking } from 'r
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { ArrowLeft, Mail, Phone, ExternalLink } from 'lucide-react-native';
-import colors from '@/constants/colors';
+import { useTheme } from '@/store/themeStore';
 
 export default function HelpCenterScreen() {
+  const { colors } = useTheme();
+  
   const handleEmailPress = () => {
     Linking.openURL('mailto:bagroomcaddy.com');
   };
@@ -39,6 +41,8 @@ export default function HelpCenterScreen() {
     </TouchableOpacity>
   );
 
+  const styles = createStyles(colors);
+  
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
@@ -113,7 +117,7 @@ export default function HelpCenterScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

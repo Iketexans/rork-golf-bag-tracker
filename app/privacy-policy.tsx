@@ -3,9 +3,11 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import colors from '@/constants/colors';
+import { useTheme } from '@/store/themeStore';
 
 export default function PrivacyPolicyScreen() {
+  const { colors } = useTheme();
+  
   const renderSection = (title: string, content: string) => (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
@@ -13,6 +15,8 @@ export default function PrivacyPolicyScreen() {
     </View>
   );
 
+  const styles = createStyles(colors);
+  
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
@@ -76,7 +80,7 @@ export default function PrivacyPolicyScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,

@@ -3,9 +3,11 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import colors from '@/constants/colors';
+import { useTheme } from '@/store/themeStore';
 
 export default function OpenSourceLicensesScreen() {
+  const { colors } = useTheme();
+  
   const renderLicense = (name: string, license: string, description?: string) => (
     <View style={styles.licenseItem}>
       <Text style={styles.licenseName}>{name}</Text>
@@ -14,6 +16,8 @@ export default function OpenSourceLicensesScreen() {
     </View>
   );
 
+  const styles = createStyles(colors);
+  
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen
@@ -117,7 +121,7 @@ export default function OpenSourceLicensesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
