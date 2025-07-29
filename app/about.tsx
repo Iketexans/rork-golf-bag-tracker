@@ -170,7 +170,7 @@ export default function AboutScreen() {
         </View>
 
         <Text style={styles.copyright}>
-          © 2024 Bagroom Caddy. All rights reserved.
+          © 2025 Bagroom Caddy. All rights reserved.
         </Text>
       </ScrollView>
     </SafeAreaView>

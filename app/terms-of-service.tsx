@@ -33,7 +33,7 @@ export default function TermsOfServiceScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Text style={styles.title}>Terms of Service</Text>
-          <Text style={styles.lastUpdated}>Last updated: December 2024</Text>
+          <Text style={styles.lastUpdated}>Last updated: July 2025</Text>
         </View>
 
         {renderSection(

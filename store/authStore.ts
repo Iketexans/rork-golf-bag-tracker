@@ -62,13 +62,34 @@ export const useAuthStore = create<AuthState>()(
       clubAccounts: [],
 
       initialize: () => {
-        const { subscriptionPlan, subscriptionExpiry } = get();
+        const { subscriptionPlan, subscriptionExpiry, user, isAuthenticated } = get();
         let isSubscriptionActive = false;
         
-        if (subscriptionPlan && subscriptionExpiry) {
+        // Check if user is owner (always has access)
+        if (user && user.role === 'owner') {
+          isSubscriptionActive = true;
+        } else if (subscriptionPlan && subscriptionExpiry) {
           const now = new Date();
           const expiry = new Date(subscriptionExpiry);
           isSubscriptionActive = now < expiry;
+        } else if (user && user.role === 'club') {
+          // Check trial status for club accounts
+          const { clubAccounts } = get();
+          const clubAccount = clubAccounts.find(account => account.id === user.id);
+          if (clubAccount) {
+            const now = new Date();
+            const trialStart = new Date(clubAccount.trialStarted);
+            const trialEnd = new Date(trialStart.getTime() + 30 * 24 * 60 * 60 * 1000);
+            isSubscriptionActive = now < trialEnd || (clubAccount.subscriptionPlan && clubAccount.subscriptionExpiry && now < new Date(clubAccount.subscriptionExpiry));
+          }
+        }
+        
+        // Set current user in other stores if authenticated
+        if (isAuthenticated && user) {
+          const { useBagStore } = require('./bagStore');
+          const { useOrderStore } = require('./orderStore');
+          useBagStore.getState().setCurrentUser(user.id);
+          useOrderStore.getState().setCurrentUser(user.id);
         }
         
         set({ 
@@ -217,19 +238,6 @@ export const useAuthStore = create<AuthState>()(
         set({
           isAuthenticated: false,
           user: null,
-          subscriptionPlan: null,
-          subscriptionExpiry: null,
-          isSubscriptionActive: false,
-        });
-        // Clear persisted storage
-        AsyncStorage.removeItem('auth-storage').then(() => {
-          console.log('Auth storage cleared');
-          // Force page reload on web, restart app on mobile
-          if (Platform.OS === 'web') {
-            window.location?.reload?.();
-          }
-        }).catch((error) => {
-          console.error('Error clearing auth storage:', error);
         });
       },
 

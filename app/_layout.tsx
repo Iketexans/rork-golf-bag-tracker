@@ -25,7 +25,7 @@ if (Platform.OS !== 'web') {
 }
 
 export const unstable_settings = {
-  initialRouteName: "auth/login",
+  initialRouteName: "(tabs)",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
