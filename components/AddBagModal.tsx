@@ -337,43 +337,74 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
     }
   };
   
-  const importBagsFromData = (data: Array<{memberName: string, bagNumber: string, membershipId?: string}>) => {
+  const importBagsFromData = async (data: {memberName: string, bagNumber: string, membershipId?: string}[]) => {
+    console.log('Starting import process with data:', data);
     let importedCount = 0;
+    const baseTimestamp = Date.now();
     
-    data.forEach((item, index) => {
+    // Process items sequentially to avoid race conditions
+    for (let index = 0; index < data.length; index++) {
+      const item = data[index];
       try {
+        console.log(`Processing item ${index + 1}/${data.length}:`, item);
+        
+        // Create unique IDs with proper spacing to avoid conflicts
+        const memberId = (baseTimestamp + (index * 10)).toString();
+        const bagId = (baseTimestamp + (index * 10) + 5).toString();
+        
+        console.log(`Creating member with ID: ${memberId}`);
         // Create new member
-        const memberId = (Date.now() + index).toString();
-        addMember({
+        const newMember = {
           id: memberId,
-          name: item.memberName,
-          membershipId: item.membershipId,
-        });
+          name: item.memberName.trim(),
+          membershipId: item.membershipId?.trim() || undefined,
+        };
+        
+        // Add member first
+        addMember(newMember);
+        console.log('Member added:', newMember);
+        
+        // Small delay to ensure member is added before bag
+        await new Promise(resolve => setTimeout(resolve, 10));
 
+        console.log(`Creating bag with ID: ${bagId}`);
         // Create new bag
-        addBag({
-          id: (Date.now() + index + 1000).toString(),
+        const newBag = {
+          id: bagId,
           memberId,
-          bagNumber: item.bagNumber,
-          location: 'bagroom',
+          bagNumber: item.bagNumber.trim(),
+          location: 'bagroom' as BagLocation,
           lastUpdated: new Date().toISOString(),
-        });
+        };
+        
+        // Add bag
+        addBag(newBag);
+        console.log('Bag added:', newBag);
         
         importedCount++;
+        console.log(`Successfully imported item ${index + 1}, total imported: ${importedCount}`);
+        
+        // Small delay between items to prevent overwhelming the store
+        await new Promise(resolve => setTimeout(resolve, 10));
       } catch (error) {
-        console.error(`Failed to import item ${index}:`, error);
+        console.error(`Failed to import item ${index + 1}:`, item, error);
       }
-    });
+    }
+    
+    console.log(`Import process completed. Total imported: ${importedCount}`);
     
     if (Platform.OS !== 'web') {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
     
-    Alert.alert(
-      'Import Complete',
-      `Successfully imported ${importedCount} bags from the file.`,
-      [{ text: 'OK', onPress: handleClose }]
-    );
+    // Add a delay to ensure all store updates are processed
+    setTimeout(() => {
+      Alert.alert(
+        'Import Complete',
+        `Successfully imported ${importedCount} bags from the file.\n\nYou can now view them in the Bags tab.`,
+        [{ text: 'OK', onPress: handleClose }]
+      );
+    }, 200);
   };
 
   const renderLocationButton = (loc: BagLocation, label: string) => (

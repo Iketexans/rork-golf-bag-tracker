@@ -77,14 +77,21 @@ export const useBagStore = create<BagState>()(
         }
         
         const userBags = bags[currentUserId] || [];
+        console.log('BagStore: Current user bags before adding:', userBags.length);
+        
         const updatedBags = {
           ...bags,
           [currentUserId]: [bag, ...userBags],
         };
-        console.log('BagStore: Updated bags:', updatedBags);
+        console.log('BagStore: Updated bags for user:', updatedBags[currentUserId].length, 'total bags');
+        
         set({
           bags: updatedBags,
         });
+        
+        // Verify the update
+        const { bags: newBags } = get();
+        console.log('BagStore: Verification - bags after set:', newBags[currentUserId]?.length || 0);
       },
 
       addMember: (member) => {
@@ -96,14 +103,21 @@ export const useBagStore = create<BagState>()(
         }
         
         const userMembers = members[currentUserId] || [];
+        console.log('BagStore: Current user members before adding:', userMembers.length);
+        
         const updatedMembers = {
           ...members,
           [currentUserId]: [member, ...userMembers],
         };
-        console.log('BagStore: Updated members:', updatedMembers);
+        console.log('BagStore: Updated members for user:', updatedMembers[currentUserId].length, 'total members');
+        
         set({
           members: updatedMembers,
         });
+        
+        // Verify the update
+        const { members: newMembers } = get();
+        console.log('BagStore: Verification - members after set:', newMembers[currentUserId]?.length || 0);
       },
 
       deleteBag: (bagId) => {
