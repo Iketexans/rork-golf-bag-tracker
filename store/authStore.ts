@@ -88,6 +88,12 @@ export const useAuthStore = create<AuthState>()(
           isInitialized: true,
           isSubscriptionActive 
         });
+        
+        // Set current user in bag store if authenticated
+        if (isAuthenticated && user) {
+          const { useBagStore } = require('@/store/bagStore');
+          useBagStore.getState().setCurrentUser(user.id);
+        }
       },
 
       checkSubscriptionStatus: () => {
@@ -118,6 +124,10 @@ export const useAuthStore = create<AuthState>()(
             user,
             isSubscriptionActive: true, // Owner always has access
           });
+          
+          // Set current user in bag store
+          const { useBagStore } = await import('@/store/bagStore');
+          useBagStore.getState().setCurrentUser(user.id);
           
           return true;
         }
@@ -158,6 +168,10 @@ export const useAuthStore = create<AuthState>()(
               subscriptionExpiry: clubAccount.subscriptionExpiry,
               isSubscriptionActive: isActive,
             });
+            
+            // Set current user in bag store
+            const { useBagStore } = await import('@/store/bagStore');
+            useBagStore.getState().setCurrentUser(user.id);
             
             return true;
           }
@@ -219,6 +233,10 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: false,
           user: null,
         });
+        
+        // Clear current user in bag store
+        const { useBagStore } = require('@/store/bagStore');
+        useBagStore.getState().setCurrentUser(null);
       },
 
       setSubscription: (plan: SubscriptionPlan, expiryDate: string) => {

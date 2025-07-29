@@ -15,7 +15,9 @@ import colors from '@/constants/colors';
 import { useBagStore } from '@/store/bagStore';
 import { BagLocation } from '@/types/bag';
 import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 import * as Haptics from 'expo-haptics';
+import * as XLSX from 'xlsx';
 
 interface AddBagModalProps {
   visible: boolean;
@@ -111,34 +113,24 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
 
   const processUploadedFile = async (file: any) => {
     try {
-      // For demonstration, we'll create sample data based on file type
+      console.log('Processing file:', file.name, 'URI:', file.uri);
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
       
-      let sampleData: Array<{memberName: string, bagNumber: string, membershipId?: string}> = [];
+      let extractedData: Array<{memberName: string, bagNumber: string, membershipId?: string}> = [];
       
-      // Simulate different file processing based on type
       if (fileExtension === 'csv' || fileExtension === 'xlsx' || fileExtension === 'xls') {
-        // Simulate Excel/CSV processing
-        sampleData = [
-          { memberName: 'John Smith', bagNumber: 'B001', membershipId: 'M12345' },
-          { memberName: 'Jane Doe', bagNumber: 'B002', membershipId: 'M12346' },
-          { memberName: 'Bob Johnson', bagNumber: 'B003', membershipId: 'M12347' },
-          { memberName: 'Alice Brown', bagNumber: 'B004' },
-          { memberName: 'Charlie Wilson', bagNumber: 'B005', membershipId: 'M12349' }
-        ];
-      } else if (fileExtension === 'docx' || fileExtension === 'doc') {
-        // Simulate Word document processing
-        sampleData = [
-          { memberName: 'Michael Davis', bagNumber: 'B006', membershipId: 'M12350' },
-          { memberName: 'Sarah Miller', bagNumber: 'B007' },
-          { memberName: 'David Garcia', bagNumber: 'B008', membershipId: 'M12352' }
-        ];
+        extractedData = await processSpreadsheetFile(file);
+      } else if (fileExtension === 'docx' || fileExtension === 'doc' || fileExtension === 'txt') {
+        extractedData = await processTextFile(file);
+      } else {
+        Alert.alert('Unsupported Format', 'Please upload an Excel (.xlsx, .xls), CSV (.csv), Word (.docx, .doc), or text (.txt) file.');
+        return;
       }
       
-      if (sampleData.length > 0) {
+      if (extractedData.length > 0) {
         Alert.alert(
           'File Processed Successfully',
-          `Found ${sampleData.length} entries in "${file.name}".\n\nWould you like to import these bags?`,
+          `Found ${extractedData.length} entries in "${file.name}".\n\nWould you like to import these bags?`,
           [
             {
               text: 'Cancel',
@@ -146,16 +138,202 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
             },
             {
               text: 'Import All',
-              onPress: () => importBagsFromData(sampleData)
+              onPress: () => importBagsFromData(extractedData)
             }
           ]
         );
       } else {
-        Alert.alert('No Data Found', 'The file appears to be empty or in an unsupported format.');
+        Alert.alert('No Data Found', 'The file appears to be empty or contains no valid member/bag data. Please ensure your file has columns for member names and bag numbers.');
       }
     } catch (error) {
       console.error('File processing error:', error);
-      Alert.alert('Processing Error', 'Failed to process the uploaded file.');
+      Alert.alert('Processing Error', 'Failed to process the uploaded file. Please check the file format and try again.');
+    }
+  };
+
+  const processSpreadsheetFile = async (file: any): Promise<Array<{memberName: string, bagNumber: string, membershipId?: string}>> => {
+    try {
+      let fileContent: string;
+      
+      if (Platform.OS === 'web') {
+        // For web, file.uri might be a blob URL or data URL
+        const response = await fetch(file.uri);
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        return parseWorkbook(workbook);
+      } else {
+        // For mobile, read the file from the URI
+        const fileInfo = await FileSystem.getInfoAsync(file.uri);
+        if (!fileInfo.exists) {
+          throw new Error('File does not exist');
+        }
+        
+        if (file.name.toLowerCase().endsWith('.csv')) {
+          // Handle CSV files
+          fileContent = await FileSystem.readAsStringAsync(file.uri);
+          return parseCSV(fileContent);
+        } else {
+          // Handle Excel files
+          const base64 = await FileSystem.readAsStringAsync(file.uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+          const workbook = XLSX.read(base64, { type: 'base64' });
+          return parseWorkbook(workbook);
+        }
+      }
+    } catch (error) {
+      console.error('Error processing spreadsheet:', error);
+      throw error;
+    }
+  };
+
+  const parseWorkbook = (workbook: XLSX.WorkBook): Array<{memberName: string, bagNumber: string, membershipId?: string}> => {
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+    
+    return parseTableData(jsonData);
+  };
+
+  const parseCSV = (csvContent: string): Array<{memberName: string, bagNumber: string, membershipId?: string}> => {
+    const lines = csvContent.split('\n').filter(line => line.trim());
+    const data = lines.map(line => {
+      // Simple CSV parsing - handle quoted fields
+      const fields = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          fields.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      fields.push(current.trim());
+      return fields;
+    });
+    
+    return parseTableData(data);
+  };
+
+  const parseTableData = (data: any[][]): Array<{memberName: string, bagNumber: string, membershipId?: string}> => {
+    if (data.length === 0) return [];
+    
+    const results: Array<{memberName: string, bagNumber: string, membershipId?: string}> = [];
+    
+    // Try to find header row and identify columns
+    let headerRowIndex = -1;
+    let nameColIndex = -1;
+    let bagColIndex = -1;
+    let memberIdColIndex = -1;
+    
+    // Look for headers in first few rows
+    for (let i = 0; i < Math.min(3, data.length); i++) {
+      const row = data[i];
+      if (!row || row.length === 0) continue;
+      
+      for (let j = 0; j < row.length; j++) {
+        const cell = String(row[j] || '').toLowerCase().trim();
+        
+        if (cell.includes('name') || cell.includes('member')) {
+          nameColIndex = j;
+          headerRowIndex = i;
+        }
+        if (cell.includes('bag') || cell.includes('number')) {
+          bagColIndex = j;
+          headerRowIndex = i;
+        }
+        if (cell.includes('id') || cell.includes('membership')) {
+          memberIdColIndex = j;
+        }
+      }
+      
+      if (nameColIndex >= 0 && bagColIndex >= 0) break;
+    }
+    
+    // If no headers found, assume first column is name, second is bag number
+    if (nameColIndex === -1 || bagColIndex === -1) {
+      nameColIndex = 0;
+      bagColIndex = 1;
+      memberIdColIndex = 2;
+      headerRowIndex = -1; // No header row
+    }
+    
+    // Process data rows
+    const startRow = headerRowIndex + 1;
+    for (let i = startRow; i < data.length; i++) {
+      const row = data[i];
+      if (!row || row.length === 0) continue;
+      
+      const memberName = String(row[nameColIndex] || '').trim();
+      const bagNumber = String(row[bagColIndex] || '').trim();
+      const membershipId = memberIdColIndex >= 0 ? String(row[memberIdColIndex] || '').trim() : '';
+      
+      if (memberName && bagNumber) {
+        results.push({
+          memberName,
+          bagNumber,
+          membershipId: membershipId || undefined
+        });
+      }
+    }
+    
+    return results;
+  };
+
+  const processTextFile = async (file: any): Promise<Array<{memberName: string, bagNumber: string, membershipId?: string}>> => {
+    try {
+      let fileContent: string;
+      
+      if (Platform.OS === 'web') {
+        const response = await fetch(file.uri);
+        fileContent = await response.text();
+      } else {
+        fileContent = await FileSystem.readAsStringAsync(file.uri);
+      }
+      
+      const results: Array<{memberName: string, bagNumber: string, membershipId?: string}> = [];
+      const lines = fileContent.split('\n').filter(line => line.trim());
+      
+      for (const line of lines) {
+        // Try to extract name and bag number from various formats
+        // Format 1: "Name - Bag123" or "Name: Bag123"
+        let match = line.match(/^(.+?)\s*[-:]\s*([A-Za-z0-9]+)\s*(.*)$/);
+        if (match) {
+          const memberName = match[1].trim();
+          const bagNumber = match[2].trim();
+          const membershipId = match[3].trim() || undefined;
+          
+          if (memberName && bagNumber) {
+            results.push({ memberName, bagNumber, membershipId });
+            continue;
+          }
+        }
+        
+        // Format 2: "Name Bag123" (space separated)
+        match = line.match(/^(.+?)\s+([A-Za-z0-9]+)\s*(.*)$/);
+        if (match) {
+          const parts = line.trim().split(/\s+/);
+          if (parts.length >= 2) {
+            const bagNumber = parts[parts.length - 1];
+            const memberName = parts.slice(0, -1).join(' ');
+            
+            if (memberName && bagNumber && /[A-Za-z0-9]/.test(bagNumber)) {
+              results.push({ memberName, bagNumber });
+            }
+          }
+        }
+      }
+      
+      return results;
+    } catch (error) {
+      console.error('Error processing text file:', error);
+      throw error;
     }
   };
   

@@ -13,7 +13,7 @@ interface BagState {
   currentUserId: string | null;
   
   // Actions
-  setCurrentUser: (userId: string) => void;
+  setCurrentUser: (userId: string | null) => void;
   addBag: (bag: Bag) => void;
   addMember: (member: Member) => void;
   deleteBag: (bagId: string) => void;
@@ -42,10 +42,12 @@ export const useBagStore = create<BagState>()(
       currentUserId: null,
 
       setCurrentUser: (userId) => {
+        console.log('BagStore: Setting current user to:', userId);
         set({ currentUserId: userId });
         // Initialize data for new user if not exists
         const { bags, members, starredBags } = get();
-        if (!bags[userId]) {
+        if (userId && !bags[userId]) {
+          console.log('BagStore: Initializing data for new user:', userId);
           set({
             bags: { ...bags, [userId]: userId === 'owner' ? initialBags : [] },
             members: { ...members, [userId]: userId === 'owner' ? initialMembers : [] },
@@ -56,7 +58,9 @@ export const useBagStore = create<BagState>()(
 
       getCurrentUserBags: () => {
         const { bags, currentUserId } = get();
-        return currentUserId ? (bags[currentUserId] || []) : [];
+        const userBags = currentUserId ? (bags[currentUserId] || []) : [];
+        console.log('BagStore: Getting bags for user:', currentUserId, 'Found:', userBags.length, 'bags');
+        return userBags;
       },
 
       getCurrentUserMembers: () => {
@@ -66,27 +70,39 @@ export const useBagStore = create<BagState>()(
 
       addBag: (bag) => {
         const { bags, currentUserId } = get();
-        if (!currentUserId) return;
+        console.log('BagStore: Adding bag for user:', currentUserId, 'Bag:', bag);
+        if (!currentUserId) {
+          console.log('BagStore: No current user set, cannot add bag');
+          return;
+        }
         
         const userBags = bags[currentUserId] || [];
+        const updatedBags = {
+          ...bags,
+          [currentUserId]: [bag, ...userBags],
+        };
+        console.log('BagStore: Updated bags:', updatedBags);
         set({
-          bags: {
-            ...bags,
-            [currentUserId]: [bag, ...userBags],
-          },
+          bags: updatedBags,
         });
       },
 
       addMember: (member) => {
         const { members, currentUserId } = get();
-        if (!currentUserId) return;
+        console.log('BagStore: Adding member for user:', currentUserId, 'Member:', member);
+        if (!currentUserId) {
+          console.log('BagStore: No current user set, cannot add member');
+          return;
+        }
         
         const userMembers = members[currentUserId] || [];
+        const updatedMembers = {
+          ...members,
+          [currentUserId]: [member, ...userMembers],
+        };
+        console.log('BagStore: Updated members:', updatedMembers);
         set({
-          members: {
-            ...members,
-            [currentUserId]: [member, ...userMembers],
-          },
+          members: updatedMembers,
         });
       },
 
