@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Golf Bag Tracker",
-    "slug": "golf-bag-tracker",
+    "name": "Bagroom Caddy",
+    "slug": "bagroom-caddy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.rork.golf-bag-tracker",
+      "bundleIdentifier": "app.rork.bagroom.caddy",
       "usesIcloudStorage": true
     },
     "android": {
@@ -23,7 +23,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.rork.golf-bag-tracker",
+      "package": "app.rork.bagroom.caddy",
       "permissions": [
         "android.permission.VIBRATE"
       ]
