@@ -62,7 +62,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isAuthenticated, isSubscriptionActive, isInitialized } = useAuthStore();
-  const { colors, isDarkMode, isLoaded } = useTheme();
+  const { colors } = useTheme();
   
   // Initialize deep linking only after auth is ready
   useDeepLinking();
@@ -70,7 +70,7 @@ function RootLayoutNav() {
   console.log('RootLayoutNav - Auth state:', { isAuthenticated, isSubscriptionActive, isInitialized });
 
   // Show loading while initializing
-  if (!isInitialized || !isLoaded) {
+  if (!isInitialized) {
     console.log('Not initialized, showing loading');
     return null;
   }
@@ -80,7 +80,7 @@ function RootLayoutNav() {
     console.log('Not authenticated, showing auth screen');
     return (
       <>
-        <StatusBar style={isDarkMode ? "light" : "dark"} />
+        <StatusBar style="dark" />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="auth" />
         </Stack>
@@ -93,7 +93,7 @@ function RootLayoutNav() {
     console.log('Subscription not active, showing auth screen');
     return (
       <>
-        <StatusBar style={isDarkMode ? "light" : "dark"} />
+        <StatusBar style="dark" />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="auth" />
         </Stack>
@@ -103,7 +103,7 @@ function RootLayoutNav() {
 
   return (
     <>
-      <StatusBar style={isDarkMode ? "light" : "dark"} />
+      <StatusBar style="dark" />
       <Stack
         screenOptions={{
           headerBackTitle: "Back",

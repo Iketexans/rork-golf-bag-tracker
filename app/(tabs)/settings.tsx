@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Switch, ScrollView, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronRight, Bell, Moon, HelpCircle, LogOut, User, Building } from 'lucide-react-native';
+import { ChevronRight, Bell, HelpCircle, LogOut, User, Building } from 'lucide-react-native';
 import { useAuthStore } from '@/store/authStore';
 import { useTheme } from '@/store/themeStore';
 import * as Haptics from 'expo-haptics';
@@ -10,18 +10,12 @@ import { router } from 'expo-router';
 export default function SettingsScreen() {
   const [notifications, setNotifications] = useState(true);
   const { user, logout } = useAuthStore();
-  const { colors, isDarkMode, setTheme, themeMode } = useTheme();
+  const { colors } = useTheme();
 
   const handlePress = () => {
     if (Platform.OS !== 'web') {
       Haptics.selectionAsync();
     }
-  };
-
-  const toggleDarkMode = () => {
-    handlePress();
-    const newMode = isDarkMode ? 'light' : 'dark';
-    setTheme(newMode);
   };
 
   const toggleNotifications = () => {
@@ -106,17 +100,6 @@ export default function SettingsScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Preferences</Text>
-          {renderSettingItem(
-            <Moon size={20} color={colors.primary} style={styles.settingIcon} />,
-            'Dark Mode',
-            undefined,
-            <Switch
-              value={isDarkMode}
-              onValueChange={toggleDarkMode}
-              trackColor={{ false: colors.inactive, true: colors.primary }}
-              thumbColor="white"
-            />
-          )}
           {renderSettingItem(
             <Bell size={20} color={colors.primary} style={styles.settingIcon} />,
             'Notifications',
