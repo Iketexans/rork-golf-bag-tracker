@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Switch, ScrollView, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronRight, Bell, HelpCircle, LogOut, User, Building } from 'lucide-react-native';
+import { ChevronRight, Bell, HelpCircle, LogOut, User, Building, Shield, FileText, Code } from 'lucide-react-native';
 import { useAuthStore } from '@/store/authStore';
 import { useTheme } from '@/store/themeStore';
 import * as Haptics from 'expo-haptics';
@@ -121,6 +121,25 @@ export default function SettingsScreen() {
             <HelpCircle size={20} color={colors.primary} style={styles.settingIcon} />,
             'Help Center',
             () => router.push('/help-center')
+          )}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Legal</Text>
+          {renderSettingItem(
+            <Shield size={20} color={colors.primary} style={styles.settingIcon} />,
+            'Privacy Policy',
+            () => router.push('/privacy-policy')
+          )}
+          {renderSettingItem(
+            <FileText size={20} color={colors.primary} style={styles.settingIcon} />,
+            'Terms of Service',
+            () => router.push('/terms-of-service')
+          )}
+          {renderSettingItem(
+            <Code size={20} color={colors.primary} style={styles.settingIcon} />,
+            'Open Source Licenses',
+            () => router.push('/open-source-licenses')
           )}
         </View>
 

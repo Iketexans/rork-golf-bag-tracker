@@ -7,6 +7,8 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, View } from "react-native";
 import { useDeepLinking } from "@/hooks/useDeepLinking";
 import { useAuthStore } from "@/store/authStore";
+import { useBagStore } from "@/store/bagStore";
+import { useOrderStore } from "@/store/orderStore";
 import { ThemeProvider, useTheme } from "@/store/themeStore";
 
 // Conditional import for gesture handler
@@ -61,8 +63,18 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const { isAuthenticated, isSubscriptionActive, isInitialized } = useAuthStore();
+  const { isAuthenticated, isSubscriptionActive, isInitialized, user } = useAuthStore();
+  const { setCurrentUser: setBagCurrentUser } = useBagStore();
+  const { setCurrentUser: setOrderCurrentUser } = useOrderStore();
   const { colors } = useTheme();
+  
+  // Set current user in stores when authenticated user changes
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setBagCurrentUser(user.id);
+      setOrderCurrentUser(user.id);
+    }
+  }, [isAuthenticated, user, setBagCurrentUser, setOrderCurrentUser]);
   
   // Fallback colors in case theme is not properly initialized
   const safeColors = colors || {

@@ -5,9 +5,11 @@ import { Order, OrderType, OrderStatus, OrderPriority } from '@/types/order';
 import { orders as initialOrders } from '@/mocks/orders';
 
 interface OrderState {
-  orders: Order[];
+  orders: Record<string, Order[]>; // userId -> orders
+  currentUserId: string | null;
   
   // Actions
+  setCurrentUser: (userId: string) => void;
   createOrder: (order: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateOrderStatus: (orderId: string, status: OrderStatus) => void;
   updateOrderNotes: (orderId: string, notes: string) => void;
@@ -15,14 +17,35 @@ interface OrderState {
   getOrdersByStatus: (status: OrderStatus) => Order[];
   getOrdersByPriority: (priority: OrderPriority) => Order[];
   getOrderById: (id: string) => Order | undefined;
+  getCurrentUserOrders: () => Order[];
 }
 
 export const useOrderStore = create<OrderState>()(
   persist(
     (set, get) => ({
-      orders: initialOrders,
+      orders: {},
+      currentUserId: null,
+
+      setCurrentUser: (userId) => {
+        set({ currentUserId: userId });
+        // Initialize data for new user if not exists
+        const { orders } = get();
+        if (!orders[userId]) {
+          set({
+            orders: { ...orders, [userId]: userId === 'owner' ? initialOrders : [] },
+          });
+        }
+      },
+
+      getCurrentUserOrders: () => {
+        const { orders, currentUserId } = get();
+        return currentUserId ? (orders[currentUserId] || []) : [];
+      },
 
       createOrder: (orderData) => {
+        const { orders, currentUserId } = get();
+        if (!currentUserId) return;
+        
         const newOrder: Order = {
           ...orderData,
           id: Date.now().toString(),
@@ -30,52 +53,80 @@ export const useOrderStore = create<OrderState>()(
           updatedAt: new Date().toISOString(),
         };
         
-        set((state) => ({
-          orders: [newOrder, ...state.orders],
-        }));
+        const userOrders = orders[currentUserId] || [];
+        set({
+          orders: {
+            ...orders,
+            [currentUserId]: [newOrder, ...userOrders],
+          },
+        });
       },
 
       updateOrderStatus: (orderId, status) => {
-        set((state) => ({
-          orders: state.orders.map((order) =>
-            order.id === orderId
-              ? {
-                  ...order,
-                  status,
-                  updatedAt: new Date().toISOString(),
-                  completedAt: status === 'completed' ? new Date().toISOString() : order.completedAt,
-                }
-              : order
-          ),
-        }));
+        const { orders, currentUserId } = get();
+        if (!currentUserId) return;
+        
+        const userOrders = orders[currentUserId] || [];
+        set({
+          orders: {
+            ...orders,
+            [currentUserId]: userOrders.map((order) =>
+              order.id === orderId
+                ? {
+                    ...order,
+                    status,
+                    updatedAt: new Date().toISOString(),
+                    completedAt: status === 'completed' ? new Date().toISOString() : order.completedAt,
+                  }
+                : order
+            ),
+          },
+        });
       },
 
       updateOrderNotes: (orderId, notes) => {
-        set((state) => ({
-          orders: state.orders.map((order) =>
-            order.id === orderId
-              ? { ...order, notes, updatedAt: new Date().toISOString() }
-              : order
-          ),
-        }));
+        const { orders, currentUserId } = get();
+        if (!currentUserId) return;
+        
+        const userOrders = orders[currentUserId] || [];
+        set({
+          orders: {
+            ...orders,
+            [currentUserId]: userOrders.map((order) =>
+              order.id === orderId
+                ? { ...order, notes, updatedAt: new Date().toISOString() }
+                : order
+            ),
+          },
+        });
       },
 
       deleteOrder: (orderId) => {
-        set((state) => ({
-          orders: state.orders.filter((order) => order.id !== orderId),
-        }));
+        const { orders, currentUserId } = get();
+        if (!currentUserId) return;
+        
+        const userOrders = orders[currentUserId] || [];
+        set({
+          orders: {
+            ...orders,
+            [currentUserId]: userOrders.filter((order) => order.id !== orderId),
+          },
+        });
       },
 
       getOrdersByStatus: (status) => {
-        return get().orders.filter((order) => order.status === status);
+        const { getCurrentUserOrders } = get();
+        return getCurrentUserOrders().filter((order) => order.status === status);
       },
 
       getOrdersByPriority: (priority) => {
-        return get().orders.filter((order) => order.priority === priority);
+        const { getCurrentUserOrders } = get();
+        return getCurrentUserOrders().filter((order) => order.priority === priority);
       },
 
       getOrderById: (id) => {
-        return get().orders.find((order) => order.id === id);
+        const { getCurrentUserOrders } = get();
+        return getCurrentUserOrders().find((order) => order.id === id);
       },
     }),
     {

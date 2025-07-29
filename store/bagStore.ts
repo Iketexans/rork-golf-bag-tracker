@@ -6,12 +6,14 @@ import { bags as initialBags } from '@/mocks/bags';
 import { members as initialMembers } from '@/mocks/members';
 
 interface BagState {
-  bags: Bag[];
-  members: Member[];
+  bags: Record<string, Bag[]>; // userId -> bags
+  members: Record<string, Member[]>; // userId -> members
   searchQuery: string;
-  starredBags: string[]; // Array of bag IDs that are starred for today
+  starredBags: Record<string, string[]>; // userId -> array of bag IDs
+  currentUserId: string | null;
   
   // Actions
+  setCurrentUser: (userId: string) => void;
   addBag: (bag: Bag) => void;
   addMember: (member: Member) => void;
   deleteBag: (bagId: string) => void;
@@ -26,51 +28,117 @@ interface BagState {
   getFilteredBags: () => Bag[];
   getStarredBags: () => Bag[];
   isBagStarred: (bagId: string) => boolean;
+  getCurrentUserBags: () => Bag[];
+  getCurrentUserMembers: () => Member[];
 }
 
 export const useBagStore = create<BagState>()(
   persist(
     (set, get) => ({
-      bags: initialBags,
-      members: initialMembers,
+      bags: {},
+      members: {},
       searchQuery: '',
-      starredBags: [],
+      starredBags: {},
+      currentUserId: null,
+
+      setCurrentUser: (userId) => {
+        set({ currentUserId: userId });
+        // Initialize data for new user if not exists
+        const { bags, members, starredBags } = get();
+        if (!bags[userId]) {
+          set({
+            bags: { ...bags, [userId]: userId === 'owner' ? initialBags : [] },
+            members: { ...members, [userId]: userId === 'owner' ? initialMembers : [] },
+            starredBags: { ...starredBags, [userId]: [] },
+          });
+        }
+      },
+
+      getCurrentUserBags: () => {
+        const { bags, currentUserId } = get();
+        return currentUserId ? (bags[currentUserId] || []) : [];
+      },
+
+      getCurrentUserMembers: () => {
+        const { members, currentUserId } = get();
+        return currentUserId ? (members[currentUserId] || []) : [];
+      },
 
       addBag: (bag) => {
-        set((state) => ({
-          bags: [bag, ...state.bags],
-        }));
+        const { bags, currentUserId } = get();
+        if (!currentUserId) return;
+        
+        const userBags = bags[currentUserId] || [];
+        set({
+          bags: {
+            ...bags,
+            [currentUserId]: [bag, ...userBags],
+          },
+        });
       },
 
       addMember: (member) => {
-        set((state) => ({
-          members: [member, ...state.members],
-        }));
+        const { members, currentUserId } = get();
+        if (!currentUserId) return;
+        
+        const userMembers = members[currentUserId] || [];
+        set({
+          members: {
+            ...members,
+            [currentUserId]: [member, ...userMembers],
+          },
+        });
       },
 
       deleteBag: (bagId) => {
-        set((state) => ({
-          bags: state.bags.filter((bag) => bag.id !== bagId),
-          starredBags: state.starredBags.filter(id => id !== bagId),
-        }));
+        const { bags, starredBags, currentUserId } = get();
+        if (!currentUserId) return;
+        
+        const userBags = bags[currentUserId] || [];
+        const userStarredBags = starredBags[currentUserId] || [];
+        
+        set({
+          bags: {
+            ...bags,
+            [currentUserId]: userBags.filter((bag) => bag.id !== bagId),
+          },
+          starredBags: {
+            ...starredBags,
+            [currentUserId]: userStarredBags.filter(id => id !== bagId),
+          },
+        });
       },
 
       updateBagLocation: (bagId, location) => {
-        set((state) => ({
-          bags: state.bags.map((bag) =>
-            bag.id === bagId
-              ? { ...bag, location, lastUpdated: new Date().toISOString() }
-              : bag
-          ),
-        }));
+        const { bags, currentUserId } = get();
+        if (!currentUserId) return;
+        
+        const userBags = bags[currentUserId] || [];
+        set({
+          bags: {
+            ...bags,
+            [currentUserId]: userBags.map((bag) =>
+              bag.id === bagId
+                ? { ...bag, location, lastUpdated: new Date().toISOString() }
+                : bag
+            ),
+          },
+        });
       },
 
       updateBagNotes: (bagId, notes) => {
-        set((state) => ({
-          bags: state.bags.map((bag) =>
-            bag.id === bagId ? { ...bag, notes } : bag
-          ),
-        }));
+        const { bags, currentUserId } = get();
+        if (!currentUserId) return;
+        
+        const userBags = bags[currentUserId] || [];
+        set({
+          bags: {
+            ...bags,
+            [currentUserId]: userBags.map((bag) =>
+              bag.id === bagId ? { ...bag, notes } : bag
+            ),
+          },
+        });
       },
 
       setSearchQuery: (query) => {
@@ -78,19 +146,28 @@ export const useBagStore = create<BagState>()(
       },
 
       toggleStarBag: (bagId) => {
-        set((state) => ({
-          starredBags: state.starredBags.includes(bagId)
-            ? state.starredBags.filter(id => id !== bagId)
-            : [...state.starredBags, bagId],
-        }));
+        const { starredBags, currentUserId } = get();
+        if (!currentUserId) return;
+        
+        const userStarredBags = starredBags[currentUserId] || [];
+        set({
+          starredBags: {
+            ...starredBags,
+            [currentUserId]: userStarredBags.includes(bagId)
+              ? userStarredBags.filter(id => id !== bagId)
+              : [...userStarredBags, bagId],
+          },
+        });
       },
 
       getBagsByLocation: (location) => {
-        return get().bags.filter((bag) => bag.location === location);
+        const { getCurrentUserBags } = get();
+        return getCurrentUserBags().filter((bag) => bag.location === location);
       },
 
       getLocationCounts: () => {
-        const bags = get().bags;
+        const { getCurrentUserBags } = get();
+        const bags = getCurrentUserBags();
         return {
           bagroom: bags.filter((bag) => bag.location === 'bagroom').length,
           player: bags.filter((bag) => bag.location === 'player').length,
@@ -99,15 +176,20 @@ export const useBagStore = create<BagState>()(
       },
 
       getMemberById: (id) => {
-        return get().members.find((member) => member.id === id);
+        const { getCurrentUserMembers } = get();
+        return getCurrentUserMembers().find((member) => member.id === id);
       },
 
       getBagById: (id) => {
-        return get().bags.find((bag) => bag.id === id);
+        const { getCurrentUserBags } = get();
+        return getCurrentUserBags().find((bag) => bag.id === id);
       },
 
       getFilteredBags: () => {
-        const { bags, members, searchQuery } = get();
+        const { getCurrentUserBags, getCurrentUserMembers, searchQuery } = get();
+        const bags = getCurrentUserBags();
+        const members = getCurrentUserMembers();
+        
         if (!searchQuery) return bags;
 
         const lowerQuery = searchQuery.toLowerCase();
@@ -122,12 +204,20 @@ export const useBagStore = create<BagState>()(
       },
 
       getStarredBags: () => {
-        const { bags, starredBags } = get();
-        return bags.filter(bag => starredBags.includes(bag.id));
+        const { getCurrentUserBags, starredBags, currentUserId } = get();
+        if (!currentUserId) return [];
+        
+        const bags = getCurrentUserBags();
+        const userStarredBags = starredBags[currentUserId] || [];
+        return bags.filter(bag => userStarredBags.includes(bag.id));
       },
 
       isBagStarred: (bagId) => {
-        return get().starredBags.includes(bagId);
+        const { starredBags, currentUserId } = get();
+        if (!currentUserId) return false;
+        
+        const userStarredBags = starredBags[currentUserId] || [];
+        return userStarredBags.includes(bagId);
       },
     }),
     {

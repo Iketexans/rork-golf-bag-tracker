@@ -16,7 +16,8 @@ export default function OrdersScreen() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const router = useRouter();
   
-  const { orders } = useOrderStore();
+  const { getCurrentUserOrders } = useOrderStore();
+  const orders = getCurrentUserOrders();
   const { getBagById, getMemberById } = useBagStore();
 
   const filteredOrders = orders.filter(order => 

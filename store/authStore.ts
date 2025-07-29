@@ -106,6 +106,12 @@ export const useAuthStore = create<AuthState>()(
             isSubscriptionActive: true, // Owner always has access
           });
           
+          // Set current user in other stores
+          const { useBagStore } = require('./bagStore');
+          const { useOrderStore } = require('./orderStore');
+          useBagStore.getState().setCurrentUser(user.id);
+          useOrderStore.getState().setCurrentUser(user.id);
+          
           return true;
         }
         
@@ -145,6 +151,12 @@ export const useAuthStore = create<AuthState>()(
               subscriptionExpiry: clubAccount.subscriptionExpiry,
               isSubscriptionActive: isActive,
             });
+            
+            // Set current user in other stores
+            const { useBagStore } = require('./bagStore');
+            const { useOrderStore } = require('./orderStore');
+            useBagStore.getState().setCurrentUser(user.id);
+            useOrderStore.getState().setCurrentUser(user.id);
             
             return true;
           }

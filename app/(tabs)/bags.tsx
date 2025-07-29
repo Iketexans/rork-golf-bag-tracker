@@ -12,7 +12,9 @@ import { Star } from 'lucide-react-native';
 
 export default function BagsScreen() {
   const { colors } = useTheme();
-  const { bags, members, getMemberById, setSearchQuery, searchQuery, getStarredBags } = useBagStore();
+  const { getCurrentUserBags, getCurrentUserMembers, getMemberById, setSearchQuery, searchQuery, getStarredBags } = useBagStore();
+  const bags = getCurrentUserBags();
+  const members = getCurrentUserMembers();
   const [selectedLocation, setSelectedLocation] = useState<BagLocation | null>(null);
   const [showStarredOnly, setShowStarredOnly] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);

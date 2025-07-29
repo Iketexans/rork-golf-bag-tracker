@@ -35,7 +35,8 @@ export default function CreateOrderModal({ visible, onClose, preselectedBagId }:
   const [dueDate, setDueDate] = useState('');
 
   const { createOrder } = useOrderStore();
-  const { bags, getMemberById } = useBagStore();
+  const { getCurrentUserBags, getMemberById } = useBagStore();
+  const bags = getCurrentUserBags();
 
   const resetForm = () => {
     setSelectedBagId(preselectedBagId || '');
