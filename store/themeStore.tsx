@@ -1,3 +1,4 @@
+import React, { createContext, useContext, ReactNode } from 'react';
 import colors from '@/constants/colors';
 
 const defaultColors = {
@@ -15,6 +16,30 @@ const defaultColors = {
   inactive: '#bdc3c7',
 };
 
+type ThemeContextType = {
+  colors: typeof defaultColors;
+};
+
+const ThemeContext = createContext<ThemeContextType>({
+  colors: defaultColors,
+});
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const themeValue = {
+    colors: colors || defaultColors,
+  };
+
+  return (
+    <ThemeContext.Provider value={themeValue}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
 export function useTheme() {
-  return { colors: colors || defaultColors };
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
 }
