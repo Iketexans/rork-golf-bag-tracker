@@ -5,12 +5,13 @@ import SwipeableBagItem from '@/components/SwipeableBagItem';
 import SearchBar from '@/components/SearchBar';
 import AddBagModal from '@/components/AddBagModal';
 import FloatingActionButton from '@/components/FloatingActionButton';
-import colors from '@/constants/colors';
+import { useTheme } from '@/store/themeStore';
 import { BagLocation } from '@/types/bag';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Star } from 'lucide-react-native';
 
 export default function BagsScreen() {
+  const { colors } = useTheme();
   const { bags, members, getMemberById, setSearchQuery, searchQuery, getStarredBags } = useBagStore();
   const [selectedLocation, setSelectedLocation] = useState<BagLocation | null>(null);
   const [showStarredOnly, setShowStarredOnly] = useState(false);
@@ -41,7 +42,7 @@ export default function BagsScreen() {
   });
 
   const renderLocationFilter = () => {
-    const locations: Array<{ label: string; value: BagLocation | null }> = [
+    const locations: { label: string; value: BagLocation | null }[] = [
       { label: 'All', value: null },
       { label: 'In Bagroom', value: 'bagroom' },
       { label: 'With Player', value: 'player' },
@@ -95,6 +96,86 @@ export default function BagsScreen() {
     );
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      padding: 16,
+    },
+    header: {
+      marginBottom: 16,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: colors.text,
+    },
+    filterContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      marginBottom: 16,
+      gap: 8,
+    },
+    starredFilter: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: 16,
+      backgroundColor: colors.card,
+      borderWidth: 2,
+      borderColor: colors.warning,
+    },
+    starredFilterActive: {
+      backgroundColor: colors.warning,
+      borderColor: colors.warning,
+    },
+    starredFilterText: {
+      color: colors.warning,
+      fontWeight: '600',
+      marginLeft: 4,
+      fontSize: 12,
+    },
+    starredFilterTextActive: {
+      color: 'white',
+    },
+    filterButton: {
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: 16,
+      backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    filterButtonActive: {
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+    },
+    filterButtonText: {
+      color: colors.textSecondary,
+      fontWeight: '500',
+      fontSize: 12,
+    },
+    filterButtonTextActive: {
+      color: 'white',
+    },
+    listContent: {
+      paddingBottom: 80,
+    },
+    emptyState: {
+      padding: 24,
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 16,
+    },
+    emptyStateText: {
+      color: colors.textSecondary,
+      fontSize: 16,
+    },
+  });
+
   return (
     <SafeAreaView edges={['bottom']} style={styles.container}>
       <View style={styles.header}>
@@ -134,83 +215,3 @@ export default function BagsScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    padding: 16,
-  },
-  header: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.text,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 16,
-    gap: 8,
-  },
-  starredFilter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: colors.card,
-    borderWidth: 2,
-    borderColor: colors.warning,
-  },
-  starredFilterActive: {
-    backgroundColor: colors.warning,
-    borderColor: colors.warning,
-  },
-  starredFilterText: {
-    color: colors.warning,
-    fontWeight: '600',
-    marginLeft: 4,
-    fontSize: 12,
-  },
-  starredFilterTextActive: {
-    color: 'white',
-  },
-  filterButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  filterButtonActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  filterButtonText: {
-    color: colors.textSecondary,
-    fontWeight: '500',
-    fontSize: 12,
-  },
-  filterButtonTextActive: {
-    color: 'white',
-  },
-  listContent: {
-    paddingBottom: 80,
-  },
-  emptyState: {
-    padding: 24,
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 16,
-  },
-  emptyStateText: {
-    color: colors.textSecondary,
-    fontSize: 16,
-  },
-});
