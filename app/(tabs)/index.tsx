@@ -17,7 +17,70 @@ export default function DashboardScreen() {
   const recentBags = getBagsByLocation('bagroom').slice(0, 5);
   const starredBags = getStarredBags();
   
-  const styles = createStyles(colors);
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollContent: {
+      padding: 16,
+    },
+    welcomeSection: {
+      marginBottom: 24,
+    },
+    welcomeText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: colors.text,
+    },
+    clubName: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      marginTop: 4,
+    },
+    statusContainer: {
+      flexDirection: 'row',
+      marginBottom: 24,
+    },
+    section: {
+      marginBottom: 24,
+    },
+    sectionHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+      marginLeft: 8,
+    },
+    viewAllButton: {
+      backgroundColor: colors.card,
+      borderRadius: 8,
+      padding: 12,
+      alignItems: 'center',
+      marginTop: 8,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    viewAllText: {
+      color: colors.primary,
+      fontWeight: '500',
+    },
+    emptyState: {
+      padding: 24,
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    emptyStateText: {
+      color: colors.textSecondary,
+      fontSize: 16,
+    },
+  });
 
   return (
     <SafeAreaView edges={['bottom']} style={styles.container}>
@@ -81,67 +144,3 @@ export default function DashboardScreen() {
   );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollContent: {
-    padding: 16,
-  },
-  welcomeSection: {
-    marginBottom: 24,
-  },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.text,
-  },
-  clubName: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    marginTop: 4,
-  },
-  statusContainer: {
-    flexDirection: 'row',
-    marginBottom: 24,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text,
-    marginLeft: 8,
-  },
-  viewAllButton: {
-    backgroundColor: colors.card,
-    borderRadius: 8,
-    padding: 12,
-    alignItems: 'center',
-    marginTop: 8,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  viewAllText: {
-    color: colors.primary,
-    fontWeight: '500',
-  },
-  emptyState: {
-    padding: 24,
-    backgroundColor: colors.card,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyStateText: {
-    color: colors.textSecondary,
-    fontSize: 16,
-  },
-});

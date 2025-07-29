@@ -76,12 +76,6 @@ function RootLayoutNav() {
     }
   }, [isAuthenticated, user, setBagCurrentUser, setOrderCurrentUser]);
   
-  // Fallback colors in case theme is not properly initialized
-  const safeColors = colors || {
-    primary: '#3a7ca5',
-    background: '#f8f9fa',
-  };
-  
   // Initialize deep linking only after auth is ready
   useDeepLinking();
 
@@ -126,12 +120,12 @@ function RootLayoutNav() {
         screenOptions={{
           headerBackTitle: "Back",
           headerStyle: {
-            backgroundColor: safeColors.background,
+            backgroundColor: colors.background,
           },
           headerShadowVisible: false,
-          headerTintColor: safeColors.primary,
+          headerTintColor: colors.primary,
           contentStyle: {
-            backgroundColor: safeColors.background,
+            backgroundColor: colors.background,
           },
         }}
       >

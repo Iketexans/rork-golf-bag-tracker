@@ -6,29 +6,19 @@ import { Flag, Home, Search, Settings, ClipboardList } from "lucide-react-native
 export default function TabLayout() {
   const { colors } = useTheme();
   
-  // Fallback colors in case theme is not properly initialized
-  const safeColors = colors || {
-    primary: '#3a7ca5',
-    textSecondary: '#636e72',
-    card: '#ffffff',
-    border: '#e0e0e0',
-    background: '#f8f9fa',
-    text: '#2d3436',
-  };
-  
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: safeColors.primary,
-        tabBarInactiveTintColor: safeColors.textSecondary,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textSecondary,
         tabBarStyle: {
-          backgroundColor: safeColors.card,
-          borderTopColor: safeColors.border,
+          backgroundColor: colors.card,
+          borderTopColor: colors.border,
         },
         headerStyle: {
-          backgroundColor: safeColors.background,
+          backgroundColor: colors.background,
         },
-        headerTintColor: safeColors.text,
+        headerTintColor: colors.text,
         headerShadowVisible: false,
         tabBarLabelStyle: {
           fontSize: 12,
