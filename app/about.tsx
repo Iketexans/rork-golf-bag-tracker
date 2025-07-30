@@ -71,9 +71,9 @@ export default function AboutScreen() {
               style={styles.logo}
             />
           </View>
-          <Text style={styles.appName}>Bagroom Caddy</Text>
-          <Text style={styles.appTagline}>Professional Golf Club Management</Text>
-          <Text style={styles.version}>Version 1.0.0</Text>
+          <Text style={styles.appName}>ClubCaddy Pro</Text>
+          <Text style={styles.appTagline}>Advanced Golf Bag Management System</Text>
+          <Text style={styles.version}>Version 1.0.1</Text>
         </View>
 
         {/* Company Info */}
@@ -83,14 +83,14 @@ export default function AboutScreen() {
           {renderInfoItem(
             <Globe size={24} color={colors.primary} />,
             'Website',
-            'www.bagroomcaddy.com',
+            'www.clubcaddypro.com',
             handleWebsitePress
           )}
           
           {renderInfoItem(
             <Mail size={24} color={colors.primary} />,
             'Contact Email',
-            'bagroomcaddy.com',
+            'support@clubcaddypro.com',
             handleEmailPress
           )}
           
@@ -106,7 +106,7 @@ export default function AboutScreen() {
           <Text style={styles.sectionTitle}>About This App</Text>
           <View style={styles.aboutCard}>
             <Text style={styles.aboutText}>
-              Bagroom Caddy is a specialized app designed to streamline and enhance the management of members&apos; golf bags at clubs. By providing precise, real-time tracking and organization, the app ensures an efficient and seamless bagroom operation, reducing errors and wait times. With a user-friendly interface tailored for club staff, Bagroom Caddy supports elevated member service, helping clubs maintain their high standards of professionalism and care. Our goal is to simplify bag tracking so clubs can focus on delivering an exceptional experience to their members.
+              ClubCaddy Pro is an innovative golf bag management solution specifically engineered for premium country clubs and golf facilities. Our comprehensive platform revolutionizes bagroom operations through intelligent tracking, automated workflows, and real-time member communication. Built by golf industry professionals, ClubCaddy Pro addresses the unique challenges of high-volume bag management while maintaining the personalized service standards that distinguish elite golf clubs. Experience seamless integration with existing club operations and elevate your member experience to new heights.
             </Text>
           </View>
         </View>
@@ -138,7 +138,7 @@ export default function AboutScreen() {
           <Text style={styles.sectionTitle}>Credits</Text>
           <View style={styles.creditsCard}>
             <Text style={styles.creditsText}>
-              Bagroom Caddy was created by a former member services professional with firsthand experience in club operations. Special thanks to the early users and club partners for their valuable feedback. Built to improve efficiency and elevate service.
+              ClubCaddy Pro was developed by a team of golf industry veterans and technology experts with decades of combined experience in club operations and member services. Our solution incorporates feedback from leading country clubs across the United States, ensuring practical functionality that meets real-world operational demands. Special recognition to our beta testing partners who helped refine this professional-grade platform.
             </Text>
           </View>
         </View>
@@ -170,7 +170,7 @@ export default function AboutScreen() {
         </View>
 
         <Text style={styles.copyright}>
-          © 2025 Bagroom Caddy. All rights reserved.
+          © 2025 ClubCaddy Pro Technologies. All rights reserved.
         </Text>
       </ScrollView>
     </SafeAreaView>

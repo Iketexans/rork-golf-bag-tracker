@@ -256,33 +256,74 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
       if (nameColIndex >= 0 && bagColIndex >= 0) break;
     }
     
-    // If no headers found, assume first column is name, second is bag number
+    // If no headers found, use intelligent column detection
     if (nameColIndex === -1 || bagColIndex === -1) {
-      nameColIndex = 0;
-      bagColIndex = 1;
-      memberIdColIndex = 2;
+      // Analyze first few data rows to determine which column contains names vs numbers
+      const sampleRows = data.slice(0, Math.min(5, data.length));
+      let bestNameCol = 0;
+      let bestBagCol = 1;
+      
+      // Score each column based on content type
+      for (let col = 0; col < Math.max(...sampleRows.map(row => row?.length || 0)); col++) {
+        let nameScore = 0;
+        let numberScore = 0;
+        
+        for (const row of sampleRows) {
+          if (!row || !row[col]) continue;
+          const cellValue = String(row[col]).trim();
+          
+          // Check if it looks like a name (contains letters, spaces, common name patterns)
+          if (/^[A-Za-z\s\-\.,']+$/.test(cellValue) && cellValue.length > 2) {
+            nameScore++;
+          }
+          
+          // Check if it looks like a bag number (contains numbers, short length)
+          if (/^[A-Za-z0-9\-]+$/.test(cellValue) && cellValue.length <= 10 && /\d/.test(cellValue)) {
+            numberScore++;
+          }
+        }
+        
+        // Assign columns based on scores
+        if (nameScore > numberScore && nameScore > 0) {
+          bestNameCol = col;
+        } else if (numberScore > nameScore && numberScore > 0) {
+          bestBagCol = col;
+        }
+      }
+      
+      nameColIndex = bestNameCol;
+      bagColIndex = bestBagCol;
+      memberIdColIndex = Math.max(nameColIndex, bagColIndex) + 1;
       headerRowIndex = -1; // No header row
     }
     
     // Process data rows
-    const startRow = headerRowIndex + 1;
+    const startRow = Math.max(0, headerRowIndex + 1);
     for (let i = startRow; i < data.length; i++) {
       const row = data[i];
       if (!row || row.length === 0) continue;
       
       const memberName = String(row[nameColIndex] || '').trim();
       const bagNumber = String(row[bagColIndex] || '').trim();
-      const membershipId = memberIdColIndex >= 0 ? String(row[memberIdColIndex] || '').trim() : '';
+      const membershipId = memberIdColIndex >= 0 && row[memberIdColIndex] ? String(row[memberIdColIndex] || '').trim() : '';
       
-      if (memberName && bagNumber) {
+      // Additional validation to ensure we have the right data
+      const isValidName = memberName && memberName.length > 1 && /[A-Za-z]/.test(memberName);
+      const isValidBagNumber = bagNumber && bagNumber.length > 0;
+      
+      if (isValidName && isValidBagNumber) {
+        console.log(`Parsed row ${i}: Name="${memberName}", Bag="${bagNumber}", ID="${membershipId}"`);
         results.push({
           memberName,
           bagNumber,
           membershipId: membershipId || undefined
         });
+      } else {
+        console.log(`Skipped row ${i}: Invalid data - Name="${memberName}", Bag="${bagNumber}"`);
       }
     }
     
+    console.log(`Parsed ${results.length} valid entries from spreadsheet`);
     return results;
   };
 
@@ -430,7 +471,7 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Add New Bag</Text>
+          <Text style={styles.title}>Professional Bag Management</Text>
           <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
             <X size={24} color={colors.text} />
           </TouchableOpacity>
@@ -438,9 +479,9 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Import from File</Text>
+            <Text style={styles.sectionTitle}>Bulk Import System</Text>
             <Text style={styles.sectionDescription}>
-              Upload an Excel spreadsheet or CSV file containing member and bag information
+              Advanced file processing for Excel, CSV, and Word documents with intelligent data recognition and validation
             </Text>
             
             <TouchableOpacity
@@ -456,10 +497,10 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
                     <Upload size={24} color={colors.primary} />
                     <View style={styles.uploadTextContainer}>
                       <Text style={styles.uploadButtonText}>
-                        Upload Spreadsheet or Document
+                        Professional Bulk Import
                       </Text>
                       <Text style={styles.uploadButtonSubtext}>
-                        Excel, CSV, or Word documents supported
+                        Smart data extraction with validation
                       </Text>
                     </View>
                   </>

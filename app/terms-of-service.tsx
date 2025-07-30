@@ -38,12 +38,12 @@ export default function TermsOfServiceScreen() {
 
         {renderSection(
           'Acceptance of Terms',
-          'By accessing and using Bagroom Caddy, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.'
+          'By accessing and using ClubCaddy Pro, you accept and agree to be bound by the terms and provisions of this agreement. If you do not agree to abide by these terms, please do not use this service.'
         )}
 
         {renderSection(
           'Description of Service',
-          'Bagroom Caddy is a specialized application designed for golf clubs to manage member golf bags and related services. The app provides tools for tracking, organizing, and managing bagroom operations to enhance member service and operational efficiency.'
+          'ClubCaddy Pro is an advanced golf club management platform designed for premium country clubs and golf facilities. The application provides comprehensive tools for bag tracking, member management, order processing, and operational analytics to enhance member service and streamline club operations.'
         )}
 
         {renderSection(
@@ -53,7 +53,7 @@ export default function TermsOfServiceScreen() {
 
         {renderSection(
           'Subscription and Payment',
-          'Bagroom Caddy operates on a subscription basis. Payment terms and subscription details are provided during the signup process. Subscriptions automatically renew unless cancelled. Refunds are handled on a case-by-case basis in accordance with our refund policy.'
+          'ClubCaddy Pro operates on a professional subscription basis tailored for golf facilities. Payment terms and subscription details are provided during the onboarding process. Subscriptions automatically renew unless cancelled. Refunds are handled according to our professional service agreement terms.'
         )}
 
         {renderSection(
@@ -68,7 +68,7 @@ export default function TermsOfServiceScreen() {
 
         {renderSection(
           'Limitation of Liability',
-          'Bagroom Caddy and its developers shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the service. This includes but is not limited to damages for loss of profits, data, or other intangible losses.'
+          'ClubCaddy Pro Technologies and its developers shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the service. This includes but is not limited to damages for loss of profits, data, or other intangible losses.'
         )}
 
         {renderSection(
@@ -83,7 +83,7 @@ export default function TermsOfServiceScreen() {
 
         {renderSection(
           'Contact Information',
-          'If you have any questions about these Terms of Service, please contact us at bagroomcaddy.com or call 832-570-5545.'
+          'If you have any questions about these Terms of Service, please contact us at support@clubcaddypro.com or visit our website at www.clubcaddypro.com for additional support resources.'
         )}
       </ScrollView>
     </SafeAreaView>

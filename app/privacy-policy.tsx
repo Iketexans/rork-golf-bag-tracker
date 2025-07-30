@@ -38,12 +38,12 @@ export default function PrivacyPolicyScreen() {
 
         {renderSection(
           'Information We Collect',
-          'Bagroom Caddy collects information necessary to provide our golf club bagroom management services. This includes member information (names, contact details), bag details, and service orders that you input into the app. We also collect usage data to improve our services and ensure proper functionality.'
+          'ClubCaddy Pro collects information necessary to provide our comprehensive golf club management services. This includes member profiles (names, contact details), bag tracking data, service orders, and operational metrics that you input into the platform. We also collect anonymized usage analytics to enhance our services and ensure optimal functionality for golf club operations.'
         )}
 
         {renderSection(
           'How We Use Your Information',
-          'We use the collected information to provide bagroom management services, track golf bags and orders, facilitate communication between club staff and members, and improve our app functionality. Your data is used solely for the purpose of delivering our services to your golf club.'
+          'We utilize collected information to deliver advanced golf club management services, including real-time bag tracking, order management, member communication facilitation, and operational analytics. Your data is processed exclusively for providing our professional-grade services to your golf facility and enhancing the overall member experience.'
         )}
 
         {renderSection(
@@ -73,7 +73,7 @@ export default function PrivacyPolicyScreen() {
 
         {renderSection(
           'Contact Us',
-          'If you have any questions about this privacy policy or our data practices, please contact us at bagroomcaddy.com or call 832-570-5545.'
+          'If you have any questions about this privacy policy or our data practices, please contact us at support@clubcaddypro.com or visit our website at www.clubcaddypro.com for additional support resources.'
         )}
       </ScrollView>
     </SafeAreaView>
