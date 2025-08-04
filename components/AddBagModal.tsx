@@ -64,7 +64,7 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
     addMember({
       id: memberId,
       name: memberName.trim(),
-      membershipId: membershipId.trim() || undefined,
+      membershipId: membershipId.trim() || '',
     });
 
     // Create new bag
@@ -419,7 +419,10 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
         };
         
         // Add member first
-        addMember(newMember);
+        addMember({
+          ...newMember,
+          membershipId: newMember.membershipId || '',
+        });
         console.log('Member added:', newMember);
         
         // Small delay to ensure member is added before bag
