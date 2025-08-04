@@ -2,18 +2,22 @@ import React, { createContext, useContext, ReactNode } from 'react';
 import colorsImport from '@/constants/colors';
 
 const defaultColors = {
-  primary: '#3a7ca5',
-  primaryLight: '#e3f2fd',
-  secondary: '#81b29a',
-  background: '#f8f9fa',
-  card: '#ffffff',
-  text: '#2d3436',
-  textSecondary: '#636e72',
-  border: '#e0e0e0',
-  success: '#2ecc71',
-  warning: '#f39c12',
-  danger: '#e74c3c',
-  inactive: '#bdc3c7',
+  primary: '#1B5E20',
+  primaryLight: '#E8F5E8',
+  secondary: '#2E7D32',
+  accent: '#C8E6C9',
+  background: '#FAFAFA',
+  card: '#FFFFFF',
+  text: '#1B1B1B',
+  textSecondary: '#616161',
+  border: '#E0E0E0',
+  success: '#4CAF50',
+  warning: '#FF9800',
+  danger: '#F44336',
+  inactive: '#BDBDBD',
+  gold: '#FFD700',
+  clubGreen: '#0D4F0C',
+  fairwayGreen: '#228B22',
 };
 
 type ThemeContextType = {
