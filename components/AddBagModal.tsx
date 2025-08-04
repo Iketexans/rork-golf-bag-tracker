@@ -264,6 +264,8 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
       let bestBagCol = 1;
       
       // Score each column based on content type
+      const columnScores: Array<{col: number, nameScore: number, numberScore: number}> = [];
+      
       for (let col = 0; col < Math.max(...sampleRows.map(row => row?.length || 0)); col++) {
         let nameScore = 0;
         let numberScore = 0;
@@ -283,13 +285,26 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
           }
         }
         
-        // Assign columns based on scores
-        if (nameScore > numberScore && nameScore > 0) {
-          bestNameCol = col;
-        } else if (numberScore > nameScore && numberScore > 0) {
-          bestBagCol = col;
-        }
+        columnScores.push({ col, nameScore, numberScore });
       }
+      
+      // Find the best columns for names and bag numbers
+      const bestNameColumn = columnScores.reduce((best, current) => 
+        current.nameScore > best.nameScore ? current : best
+      );
+      
+      const bestBagColumn = columnScores.reduce((best, current) => 
+        current.numberScore > best.numberScore && current.col !== bestNameColumn.col ? current : best
+      );
+      
+      bestNameCol = bestNameColumn.col;
+      bestBagCol = bestBagColumn.col;
+      
+      console.log('Column analysis:', {
+        columnScores,
+        selectedNameCol: bestNameCol,
+        selectedBagCol: bestBagCol
+      });
       
       nameColIndex = bestNameCol;
       bagColIndex = bestBagCol;
@@ -307,19 +322,21 @@ export default function AddBagModal({ visible, onClose }: AddBagModalProps) {
       const bagNumber = String(row[bagColIndex] || '').trim();
       const membershipId = memberIdColIndex >= 0 && row[memberIdColIndex] ? String(row[memberIdColIndex] || '').trim() : '';
       
+      console.log(`Row ${i}: nameCol=${nameColIndex}, bagCol=${bagColIndex}, name="${memberName}", bag="${bagNumber}"`);
+      
       // Additional validation to ensure we have the right data
       const isValidName = memberName && memberName.length > 1 && /[A-Za-z]/.test(memberName);
       const isValidBagNumber = bagNumber && bagNumber.length > 0;
       
       if (isValidName && isValidBagNumber) {
-        console.log(`Parsed row ${i}: Name="${memberName}", Bag="${bagNumber}", ID="${membershipId}"`);
+        console.log(`✓ Parsed row ${i}: Name="${memberName}", Bag="${bagNumber}", ID="${membershipId}"`);
         results.push({
           memberName,
           bagNumber,
           membershipId: membershipId || undefined
         });
       } else {
-        console.log(`Skipped row ${i}: Invalid data - Name="${memberName}", Bag="${bagNumber}"`);
+        console.log(`✗ Skipped row ${i}: Invalid data - Name="${memberName}" (valid: ${isValidName}), Bag="${bagNumber}" (valid: ${isValidBagNumber})`);
       }
     }
     

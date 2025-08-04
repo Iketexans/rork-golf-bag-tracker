@@ -35,7 +35,7 @@ export default function OpenSourceLicensesScreen() {
         <View style={styles.header}>
           <Text style={styles.title}>Open Source Licenses</Text>
           <Text style={styles.subtitle}>
-            Bagroom Caddy is built using various open source libraries and frameworks. 
+            ClubCaddy Pro is built using various open source libraries and frameworks. 
             We are grateful to the open source community for their contributions.
           </Text>
         </View>
@@ -114,6 +114,8 @@ export default function OpenSourceLicensesScreen() {
           <Text style={styles.footerText}>
             This app is built with love and respect for the open source community. 
             All licenses are respected and maintained according to their terms.
+            
+            © 2025 ClubCaddy Pro Technologies. All rights reserved.
           </Text>
         </View>
       </ScrollView>
