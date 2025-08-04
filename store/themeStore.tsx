@@ -2,10 +2,10 @@ import React, { createContext, useContext, ReactNode } from 'react';
 import colorsImport from '@/constants/colors';
 
 const defaultColors = {
-  primary: '#1B5E20',
-  primaryLight: '#E8F5E8',
-  secondary: '#2E7D32',
-  accent: '#C8E6C9',
+  primary: '#007AFF',
+  primaryLight: '#E3F2FD',
+  secondary: '#0056CC',
+  accent: '#BBDEFB',
   background: '#FAFAFA',
   card: '#FFFFFF',
   text: '#1B1B1B',

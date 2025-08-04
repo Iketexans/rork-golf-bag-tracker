@@ -1,8 +1,8 @@
 const colors = {
-  primary: '#1B5E20', // Deep forest green
-  primaryLight: '#E8F5E8', // Light green
-  secondary: '#2E7D32', // Golf course green
-  accent: '#C8E6C9', // Soft green accent
+  primary: '#007AFF', // iOS blue
+  primaryLight: '#E3F2FD', // Light blue
+  secondary: '#0056CC', // Darker blue
+  accent: '#BBDEFB', // Soft blue accent
   background: '#FAFAFA',
   card: '#FFFFFF',
   text: '#1B1B1B',
@@ -12,9 +12,9 @@ const colors = {
   warning: '#FF9800',
   danger: '#F44336',
   inactive: '#BDBDBD',
-  gold: '#FFD700', // Premium gold accent
-  clubGreen: '#0D4F0C', // Dark club green
-  fairwayGreen: '#228B22', // Fairway green
+  gold: '#FFD700',
+  clubGreen: '#0D4F0C',
+  fairwayGreen: '#228B22',
 };
 
 export default colors;
